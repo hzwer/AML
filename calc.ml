@@ -34,7 +34,17 @@ let int_int_calc a op b =
   | Mul -> Int(a*b)
   | Div -> Int(a/b);;
 
-let rec geo_calc = function
+let rec print = function
+  | Vec(a, b) -> printf "(%i,%i)" a b 
+  (*| Vec(a,b) -> (a*b)*)
+  | Int(a) -> printf "(%i)" a 
+  | Binop(e1, op, e2) ->
+     print e1;
+     printop op;
+     print e2;;
+
+let rec geo_calc expr =
+  match expr with
   | Vec(a, b) -> Vec(a, b)
   | Int(a) -> Int(a)
   | Binop(e1, op, e2) -> 
@@ -54,16 +64,8 @@ let rec geo_calc = function
           | Binop(c,q,d) -> geo_calc(Binop(e1, op, geo_calc(e2)))
           )
       | Binop(a,q,b) ->
-          geo_calc(Binop(geo_calc(a),q,geo_calc(b)));;
-
-let rec print = function
-  | Vec(a, b) -> printf "(%i,%i)" a b 
-  (*| Vec(a,b) -> (a*b)*)
-  | Int(a) -> printf "(%i)" a 
-  | Binop(e1, op, e2) ->
-     print e1;
-     printop op;
-     print e2;;
+          let r1 = geo_calc(e1) in
+          geo_calc(Binop(r1,op,e2));;
 
 let addlib lib =
   let rec aux ic = 

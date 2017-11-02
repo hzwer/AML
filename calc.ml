@@ -91,6 +91,7 @@ let rec geo_calc expr =
 
 let rec print_list = function
   | Expr(e) -> 
+      printf("  ");
       printcpp e;
       printf(";");
       print_newline();
@@ -119,20 +120,11 @@ let read_all file =
   in aux (open_in file);;
 
 let _ =
-  printf "(*produced by AML*)";
+  printf "/*produced by AML*/";
   print_newline();
-  addlib "lib/geo.ml";
+  addlib "lib/header.ml";
   let lexbuf = read_all "test.aml" in 
   let tokens = Lexing.from_string lexbuf in
   let result = Parser.main Lexer.token tokens in 
   print_list(result);
-  exit 0;
-  try
-    let lexbuf = Lexing.from_channel stdin in
-    while true do
-      let result = Parser.main Lexer.token lexbuf in
-      print_list(result);
-(*      printf "%i" (calc result);*)
-    done
-  with Lexer.Eof ->
-    exit 0
+  addlib "lib/tail.ml";

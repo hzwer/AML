@@ -2,16 +2,11 @@ open Ast
 open Printf
 exception Invalid_input;;
 
-let printval = function
+(*let printval = function
   | Int(a) -> printf "%i" a
   | Vec(a,b) -> printf "(%i,%i)" a b
   | Binop(e1,op,e2) -> raise Invalid_input;;
 
-let printop = function
-  | Add -> printf " +! "
-  | Sub -> printf " -! "
-  | Mul -> printf " *! "
-  | Div -> printf " /! ";;
 
 let vec_vec_calc x1 y1 op x2 y2 =
   match op with
@@ -34,7 +29,8 @@ let int_int_calc a op b =
   | Mul -> Int(a*b)
   | Div -> Int(a/b);;
 
-let rec print = function
+*)
+(*let rec print = function
   | Vec(a, b) -> printf "(%i,%i)" a b 
   (*| Vec(a,b) -> (a*b)*)
   | Int(a) -> printf "(%i)" a 
@@ -42,7 +38,32 @@ let rec print = function
      print e1;
      printop op;
      print e2;;
+*)
 
+let printop = function
+  | Add -> printf "+"
+  | Sub -> printf "-"
+  | Mul -> printf "*"
+  | Div -> printf "/";;
+
+let rec printcpp expr = 
+  match expr with
+  | Vec(a,b) -> 
+      printf "vec2i(";
+      printcpp a;
+      printf ",";
+      printcpp b;
+      printf ")";
+  | Int(a) -> printf "%i" a;
+  | Var(a) -> printf "%s" a;
+  | Assign(a, e1) -> 
+      printf "%s=" a;
+      printcpp e1;
+  | Binop(e1, op, e2) -> 
+      printcpp e1;
+      printop op;
+      printcpp e2;;
+(*
 let rec geo_calc expr =
   match expr with
   | Vec(a, b) -> Vec(a, b)
@@ -66,6 +87,16 @@ let rec geo_calc expr =
       | Binop(a,q,b) ->
           let r1 = geo_calc(e1) in
           geo_calc(Binop(r1,op,e2));;
+*)
+
+let rec print_list = function
+  | Expr(e) -> 
+      printcpp e;
+      printf(";");
+      print_newline();
+  | Multiexpr(e,t) ->
+      print_list(Expr(e));
+      print_list t;;
 
 let addlib lib =
   let rec aux ic = 
@@ -76,20 +107,32 @@ let addlib lib =
     with e ->
       close_in_noerr ic
   in aux (open_in lib);;
-  
+
+let read_all file = 
+  let rec aux ic = 
+    try
+      let line = input_line ic in
+      (line^(aux ic));
+    with e -> 
+      close_in_noerr ic;
+      "";
+  in aux (open_in file);;
+
 let _ =
   printf "(*produced by AML*)";
   print_newline();
   addlib "lib/geo.ml";
+  let lexbuf = read_all "test.aml" in 
+  let tokens = Lexing.from_string lexbuf in
+  let result = Parser.main Lexer.token tokens in 
+  print_list(result);
+  exit 0;
   try
     let lexbuf = Lexing.from_channel stdin in
     while true do
       let result = Parser.main Lexer.token lexbuf in
-      let geo_val = geo_calc result in
-      printval(geo_val);
+      print_list(result);
 (*      printf "%i" (calc result);*)
-      printf(";");
-      print_newline();
     done
   with Lexer.Eof ->
     exit 0

@@ -1,6 +1,12 @@
 type operator = Add | Sub | Mul | Div
 
 type expr =
-  | Binop of expr * operator * expr
   | Int of int
-  | Vec of int * int
+  | Var of string
+  | Vec of expr * expr
+  | Binop of expr * operator * expr
+  | Assign of string * expr
+
+type expr_list = 
+  | Expr of expr
+  | Multiexpr of expr * expr_list

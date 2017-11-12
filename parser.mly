@@ -1,6 +1,12 @@
 %{ open Ast %}
+%token AGENT
+%token INIT
+%token STEP
 %token <string> VARIABLE
+%token <string> DEFTYPE
 %token <int> INT
+%token DEFINT
+%token DEFVEC2I
 %token PLUS MINUS TIMES DIV
 %token LPAREN RPAREN
 %token EQUAL
@@ -13,17 +19,26 @@
 %left DIV TIMES
 
 %start main
-%type <Ast.expr_list> main
+%type <Ast.agents> main
                                
 %%
   main:
-    | LBRACE block RBRACE        { $2 };
+    | def_agent                  {$1};
+    | def_agent main           {Multiagent($1, $2)}
 
+  def_agent:
+    | AGENT LBRACE init step RBRACE SEMICOLON {Agent($3, $4)};
+  init:
+    | INIT LBRACE block RBRACE   {$3};
+  step:
+    | STEP LBRACE block RBRACE   {$3};
+  stmt:
+    | expr SEMICOLON                       {Expr($1)}
+    | declaration SEMICOLON                {$1}
+    | assignment SEMICOLON                 {$1}
   block:
-    | expr SEMICOLON             { Expr($1) }
-    | assignment SEMICOLON       { Expr($1) }
-    | expr SEMICOLON block       { Multiexpr($1, $3) };
-    | assignment SEMICOLON block { Multiexpr($1, $3) };
+    | stmt                       {Stmt($1)}
+    | stmt block                 {Multistmt($1,$2)}
 
   vec:
     | LPAREN expr COMMA expr RPAREN { Vec($2, $4) };
@@ -32,11 +47,13 @@
       | INT                           { Int($1) }
       | vec                           { $1 }
       | VARIABLE                      { Var($1) }
-      | LPAREN expr RPAREN            { $2}
+      | LPAREN expr RPAREN            { $2 }
       | expr TIMES expr               { Binop($1, Mul, $3) }
       | expr DIV expr                 { Binop($1, Div, $3) }
       | expr PLUS expr                { Binop($1, Add, $3) }
       | expr MINUS expr               { Binop($1, Sub, $3) };
+  declaration:
+    | DEFTYPE VARIABLE EQUAL expr     { Declar($1,$2,$4)};
 
   assignment:
     | VARIABLE EQUAL expr             { Assign($1, $3) };

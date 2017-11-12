@@ -46,23 +46,30 @@ let printop = function
   | Mul -> printf "*"
   | Div -> printf "/";;
 
-let rec printcpp expr = 
+let rec print_expr expr = 
   match expr with
   | Vec(a,b) -> 
       printf "vec2i(";
-      printcpp a;
+      print_expr a;
       printf ",";
-      printcpp b;
+      print_expr b;
       printf ")";
   | Int(a) -> printf "%i" a;
   | Var(a) -> printf "%s" a;
-  | Assign(a, e1) -> 
-      printf "%s=" a;
-      printcpp e1;
   | Binop(e1, op, e2) -> 
-      printcpp e1;
+      print_expr e1;
       printop op;
-      printcpp e2;;
+      print_expr e2;;
+
+let print_stmt = function
+  | Expr(e) -> print_expr e;
+  | Assign(a, e1) ->
+      printf "%s=" a;
+      print_expr e1;
+  | Declar(typename, a, e1) -> 
+      printf "%s=%s" typename a;
+      print_expr e1;;
+
 (*
 let rec geo_calc expr =
   match expr with
@@ -90,14 +97,25 @@ let rec geo_calc expr =
 *)
 
 let rec print_list = function
-  | Expr(e) -> 
+  | Stmt(e) -> 
       printf("  ");
-      printcpp e;
+      print_stmt e;
       printf(";");
       print_newline();
-  | Multiexpr(e,t) ->
-      print_list(Expr(e));
+  | Multistmt(e,t) ->
+      print_list(Stmt(e));
       print_list t;;
+
+let rec print_agents = function
+  | Agent(init_list, step_list) ->
+      printf("Agent{\nInit{\n");
+      print_list init_list;
+      printf("}\nStep{\n");
+      print_list step_list;
+      printf("}\n};");
+  | Multiagent(agt1, rest) -> 
+      print_agents agt1;
+      print_agents rest;;
 
 let addlib lib =
   let rec aux ic = 
@@ -122,9 +140,9 @@ let read_all file =
 let _ =
   printf "/*produced by AML*/";
   print_newline();
-  addlib "lib/header.ml";
+  (*addlib "lib/header.ml";*)
   let lexbuf = read_all "test.aml" in 
   let tokens = Lexing.from_string lexbuf in
-  let result = Parser.main Lexer.token tokens in 
-  print_list(result);
-  addlib "lib/tail.ml";
+  let agents = Parser.main Lexer.token tokens in 
+  print_agents(agents);
+  (*addlib "lib/tail.ml";*)

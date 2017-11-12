@@ -1,6 +1,12 @@
 type token =
+  | AGENT
+  | INIT
+  | STEP
   | VARIABLE of (string)
+  | DEFTYPE of (string)
   | INT of (int)
+  | DEFINT
+  | DEFVEC2I
   | PLUS
   | MINUS
   | TIMES
@@ -16,4 +22,4 @@ type token =
   | RBRACE
 
 val main :
-  (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> Ast.expr_list
+  (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> Ast.agents

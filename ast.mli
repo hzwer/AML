@@ -5,8 +5,17 @@ type expr =
   | Var of string
   | Vec of expr * expr
   | Binop of expr * operator * expr
-  | Assign of string * expr
 
-type expr_list = 
+type stmt = 
   | Expr of expr
-  | Multiexpr of expr * expr_list
+  | Assign of string * expr
+  | Declar of string * string * expr (*int a=1+2; 3 params are 'int', 'a', '1+2'*)
+
+type stmt_list = 
+  | Stmt of stmt
+  | Multistmt of stmt * stmt_list
+
+type agents = 
+  | Agent of stmt_list * stmt_list
+  | Multiagent of agents * agents
+

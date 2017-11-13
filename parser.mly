@@ -2,7 +2,7 @@
 %token AGENT
 %token INIT
 %token STEP
-%token <string> VARIABLE
+%token <string> IDENTIFIER
 %token <string> DEFTYPE
 %token <int> INT
 %token DEFINT
@@ -13,47 +13,66 @@
 %token EOL
 %token EOF
 %token COMMA
+%token FUNC
 %token SEMICOLON
 %token LBRACE RBRACE
 %left PLUS MINUS
 %left DIV TIMES
 
 %start main
-%type <Ast.agents> main
+%type <Ast.t> main
                                
 %%
   main:
-    | def_agent                  {$1};
-    | def_agent main           {Multiagent($1, $2)}
+    toplevel_list EOF               { $1 }
 
-  def_agent:
-    | AGENT LBRACE init step RBRACE SEMICOLON {Agent($3, $4)};
+  toplevel:
+    | stmt {Stmt $1}    
+    | FUNC IDENTIFIER LPAREN identifier_list RPAREN
+      LBRACE stmt_list RBRACE
+      { Function($2, $4, $7) }
+    | AGENT LBRACE init step RBRACE {Agent($3, $4)}
+    
+  toplevel_list:
+    | { [] }
+    | toplevel toplevel_list      { $1 :: $2 }
+
   init:
-    | INIT LBRACE block RBRACE   {$3};
+    | INIT LBRACE stmt_list RBRACE   {$3}
+  
   step:
-    | STEP LBRACE block RBRACE   {$3};
+    | STEP LBRACE stmt_list RBRACE   {$3}
+    
+  identifier_list:
+    | { [] }
+    | IDENTIFIER
+      { [$1] }
+    | IDENTIFIER COMMA identifier_list
+      { $1 :: $3 }
+      
   stmt:
-    | expr SEMICOLON                       {Expr($1)}
     | declaration SEMICOLON                {$1}
     | assignment SEMICOLON                 {$1}
-  block:
-    | stmt                       {Stmt($1)}
-    | stmt block                 {Multistmt($1,$2)}
+    
+  stmt_list:
+    | { [] }
+    | stmt stmt_list                 { $1 :: $2 }
 
   vec:
-    | LPAREN expr COMMA expr RPAREN { Vec($2, $4) };
+    | LPAREN expr COMMA expr RPAREN { Vec($2, $4) }
   
   expr:
       | INT                           { Int($1) }
       | vec                           { $1 }
-      | VARIABLE                      { Var($1) }
+      | IDENTIFIER                      { Var($1) }
       | LPAREN expr RPAREN            { $2 }
       | expr TIMES expr               { Binop($1, Mul, $3) }
       | expr DIV expr                 { Binop($1, Div, $3) }
       | expr PLUS expr                { Binop($1, Add, $3) }
       | expr MINUS expr               { Binop($1, Sub, $3) };
+  
   declaration:
-    | DEFTYPE VARIABLE EQUAL expr     { Declar($1,$2,$4)};
+    | DEFTYPE IDENTIFIER EQUAL expr     { Declar($1, $2, $4)};
 
   assignment:
-    | VARIABLE EQUAL expr             { Assign($1, $3) };
+    | IDENTIFIER EQUAL expr             { Assign($1, $3) };

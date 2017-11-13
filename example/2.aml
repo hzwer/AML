@@ -1,0 +1,17 @@
+Agent{
+  Init{
+    a=1;
+  }
+  Step{
+    a=1;
+  }
+}
+
+Agent{
+  Init{
+    a=1;
+  }
+  Step{
+    a=1;
+  }
+}

@@ -41,10 +41,10 @@ let int_int_calc a op b =
 *)
 
 let printop = function
-  | Add -> printf "+"
-  | Sub -> printf "-"
-  | Mul -> printf "*"
-  | Div -> printf "/";;
+  | Add -> printf " + "
+  | Sub -> printf " - "
+  | Mul -> printf " * "
+  | Div -> printf " / ";;
 
 let rec print_expr expr = 
   match expr with
@@ -64,11 +64,13 @@ let rec print_expr expr =
 let print_stmt = function
   | Expr(e) -> print_expr e;
   | Assign(a, e1) ->
-      printf "%s=" a;
+      printf "%s = " a;
       print_expr e1;
+      printf ";"
   | Declar(typename, a, e1) -> 
-      printf "%s=%s" typename a;
+      printf "%s = %s" typename a;
       print_expr e1;;
+      printf ";"
 
 (*
 let rec geo_calc expr =
@@ -96,26 +98,43 @@ let rec geo_calc expr =
           geo_calc(Binop(r1,op,e2));;
 *)
 
-let rec print_list = function
-  | Stmt(e) -> 
-      printf("  ");
-      print_stmt e;
-      printf(";");
-      print_newline();
-  | Multistmt(e,t) ->
-      print_list(Stmt(e));
-      print_list t;;
+let rec print_stmt_list = function
+  | [] -> printf "";
+  | [x] -> printf("  ");
+           print_stmt x;
+           print_newline();
+  | h :: t -> print_stmt h;
+              printf("\n");
+              print_stmt_list t;;
 
-let rec print_agents = function
+let rec print_idens = function
+  | [] -> printf ","
+  | [x] -> printf "%s" x;
+  | h :: t -> printf "%s," h;
+             print_idens t;;
+  
+let rec print_toplevel = function
+  | Stmt(e) -> print_stmt e;
   | Agent(init_list, step_list) ->
       printf("Agent{\nInit{\n");
-      print_list init_list;
-      printf("}\nStep{\n");
-      print_list step_list;
-      printf("}\n};");
-  | Multiagent(agt1, rest) -> 
-      print_agents agt1;
-      print_agents rest;;
+      print_stmt_list init_list;
+      printf("}\nvoid Step(){\n");
+      print_stmt_list step_list;
+      printf("}\n};\n");
+  | Function(identifier, identifiers, stmt_list) ->
+     printf("void ");
+     printf "%s" identifier;
+     printf("(");
+     print_idens identifiers;
+     printf("){\n");
+     print_stmt_list stmt_list;
+     printf("}\n");;
+
+let rec print_t = function
+  | [] -> printf("")
+  | [x] -> print_toplevel(x);
+  | h :: t -> print_toplevel(h);
+              print_t(t);;
 
 let addlib lib =
   let rec aux ic = 
@@ -141,8 +160,8 @@ let _ =
   printf "/*produced by AML*/";
   print_newline();
   (*addlib "lib/header.ml";*)
-  let lexbuf = read_all "test.aml" in 
+  let lexbuf = read_all "./example/test.aml" in 
   let tokens = Lexing.from_string lexbuf in
-  let agents = Parser.main Lexer.token tokens in 
-  print_agents(agents);
+  let t = Parser.main Lexer.token tokens in 
+  print_t(t);
   (*addlib "lib/tail.ml";*)

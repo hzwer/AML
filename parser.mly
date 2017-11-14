@@ -5,6 +5,8 @@
 %token <string> IDENTIFIER
 %token <string> DEFTYPE
 %token <int> INT
+%token IF
+%token ELSE
 %token DEFINT
 %token DEFVEC2I
 %token PLUS MINUS TIMES DIV
@@ -16,6 +18,7 @@
 %token FUNC
 %token SEMICOLON
 %token LBRACE RBRACE
+
 %left PLUS MINUS
 %left DIV TIMES
 
@@ -27,21 +30,22 @@
     toplevel_list EOF               { $1 }
 
   toplevel:
-    | stmt {Stmt $1}    
+    | stmt_list { Stmts $1 }
+    | LBRACE stmt_list RBRACE { Stmts $2 }    
     | FUNC IDENTIFIER LPAREN identifier_list RPAREN
       LBRACE stmt_list RBRACE
       { Function($2, $4, $7) }
-    | AGENT LBRACE init step RBRACE {Agent($3, $4)}
+    | AGENT LBRACE init step RBRACE { Agent($3, $4) }
     
   toplevel_list:
     | { [] }
     | toplevel toplevel_list      { $1 :: $2 }
 
   init:
-    | INIT LBRACE stmt_list RBRACE   {$3}
+    | INIT LBRACE stmt_list RBRACE    { $3 }
   
   step:
-    | STEP LBRACE stmt_list RBRACE   {$3}
+    | STEP LBRACE stmt_list RBRACE   { $3 }
     
   identifier_list:
     | { [] }
@@ -49,15 +53,24 @@
       { [$1] }
     | IDENTIFIER COMMA identifier_list
       { $1 :: $3 }
-      
+
+  if_stmt:
+    | IF LPAREN expr RPAREN LBRACE stmt_list RBRACE
+         { If($3, $6) }
+    | IF LPAREN expr RPAREN
+         LBRACE stmt_list RBRACE
+         ELSE LBRACE stmt_list RBRACE
+         { IfElse($3, $6, $10) }
+    
   stmt:
-    | declaration SEMICOLON                {$1}
-    | assignment SEMICOLON                 {$1}
+    | if_stmt                              { $1 }
+    | declaration SEMICOLON                { $1 }
+    | assignment SEMICOLON                 { $1 }
     
   stmt_list:
     | { [] }
     | stmt stmt_list                 { $1 :: $2 }
-
+    
   vec:
     | LPAREN expr COMMA expr RPAREN { Vec($2, $4) }
   

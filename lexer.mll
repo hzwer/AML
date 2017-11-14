@@ -7,11 +7,13 @@ let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '0'-'9' '_']*
 
 rule token =
   parse [' ' '\t']     { token lexbuf }
-  | "Agent"        {AGENT}
-  | "Init"         {INIT}
-  | "Step"         {STEP}
-  | "Func"         {FUNC}
-  | ['\n']         {EOL}
+  | "agent"        { AGENT }
+  | "init"         { INIT }
+  | "step"         { STEP }
+  | "func"         { FUNC }
+  | "if"           { IF }
+  | "else"         { ELSE }
+  | ['\n']         { EOL }
   | ['0'-'9']+ as lxm { INT(int_of_string lxm) }
   | '='            { EQUAL }
   | '+'            { PLUS }

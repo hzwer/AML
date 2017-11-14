@@ -14,11 +14,13 @@ and stmt =
   | Expr of expr
   | Assign of string * expr
   | Declar of string * string * expr (*int a=1+2; 3 params are 'int', 'a', '1+2'*)
+  | If of (expr * stmt_list)
+  | IfElse of (expr * stmt_list * stmt_list)
             
 and stmt_list = stmt list
 
 and toplevel = 
-  | Stmt of stmt
+  | Stmts of stmt_list
   | Agent of stmt_list * stmt_list
   | Function of (identifier * identifiers * stmt_list)
 

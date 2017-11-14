@@ -1,4 +1,4 @@
-Func f(a, b){
+func f(a, b){
    a = a + b;
    b = b - a;
 }

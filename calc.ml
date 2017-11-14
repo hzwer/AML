@@ -61,17 +61,36 @@ let rec print_expr expr =
       printop op;
       print_expr e2;;
 
-let print_stmt = function
-  | Expr(e) -> print_expr e;
-  | Assign(a, e1) ->
+let rec print_stmt_list = function
+  | [] -> printf("")
+  | [Expr(e)] -> print_expr e;
+                 printf("\n");
+  | [Assign(a, e1)] ->
       printf "%s = " a;
       print_expr e1;
-      printf ";"
-  | Declar(typename, a, e1) -> 
+      printf ";";
+      printf("\n");
+  | [Declar(typename, a, e1)] -> 
       printf "%s = %s" typename a;
-      print_expr e1;;
-      printf ";"
-
+      print_expr e1;
+      printf ";";
+      printf("\n");
+  | [If(a, b)] ->
+      printf "if(";
+      print_expr a;
+      printf "){\n";
+      print_stmt_list b;
+      printf "}\n";
+  | [IfElse(a, b, c)] ->
+     print_stmt_list [If(a, b)];
+     printf "else{";
+     print_stmt_list c;
+     printf "}\n";
+  | h :: t -> print_stmt_list [h];
+              print_stmt_list t;;
+            
+            
+ 
 (*
 let rec geo_calc expr =
   match expr with
@@ -98,23 +117,17 @@ let rec geo_calc expr =
           geo_calc(Binop(r1,op,e2));;
 *)
 
-let rec print_stmt_list = function
-  | [] -> printf "";
-  | [x] -> printf("  ");
-           print_stmt x;
-           print_newline();
-  | h :: t -> print_stmt h;
-              printf("\n");
-              print_stmt_list t;;
-
 let rec print_idens = function
-  | [] -> printf ","
+  | [] -> printf ",";
   | [x] -> printf "%s" x;
   | h :: t -> printf "%s," h;
-             print_idens t;;
+              print_idens t;;
   
 let rec print_toplevel = function
-  | Stmt(e) -> print_stmt e;
+  | Stmts(e) ->
+     printf("{\n");
+     print_stmt_list e;
+     printf("}\n");
   | Agent(init_list, step_list) ->
       printf("Agent{\nInit{\n");
       print_stmt_list init_list;

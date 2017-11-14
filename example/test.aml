@@ -1,22 +1,23 @@
-Func f(a, b){
+agent{
+  init
+  {
+      a = 1;
+  }
+  step
+  {
+      a = 1;
+  }
+}
+
+func f(a, b)
+{
    a = a + b;
    b = b - a;
 }
 
-Agent{
-  Init{
-    a=1;
-  }
-  Step{
-    a=1;
-  }
-}
-
-Agent{
-  Init{
-    a=1;
-  }
-  Step{
-    a=1;
-  }
+{
+    if(2 + 1)
+    {
+        a = 3 + 3;
+    }    
 }

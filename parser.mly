@@ -73,6 +73,11 @@
     | IDENTIFIER COMMA identifier_list
       { $1 :: $3 }
 
+  for_stmt:
+    | FOR LPAREN assignment SEMICOLON expr SEMICOLON assignment RPAREN
+    LBRACE stmt_list RBRACE
+          { For($3, $5, $7, $10) }
+    
   if_stmt:
     | IF LPAREN expr RPAREN LBRACE stmt_list RBRACE
          { If($3, $6) }
@@ -83,6 +88,7 @@
     
   stmt:
     | if_stmt                              { $1 }
+    | for_stmt                             { $1 }
     | assignment SEMICOLON                 { $1 }
     
   stmt_list:

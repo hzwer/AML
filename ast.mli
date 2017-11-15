@@ -13,14 +13,13 @@ and expr =
   | Leftvalue of leftvalue
   | Vec of expr * expr
   | Binop of string * expr * expr
-
-and exprs = expr list
-           
+          
 and stmt =
   | Expr of expr
   | Assign of (leftvalue * expr)
   | If of (expr * stmt_list)
   | IfElse of (expr * stmt_list * stmt_list)
+  | For of (stmt * expr * stmt * stmt_list) 
             
 and stmt_list = stmt list
 

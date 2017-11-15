@@ -67,17 +67,15 @@ let rec print_expr = function
      printf " %s " op;
      print_expr e2;
      printf (")");;
-
+  
 let rec print_stmt_list = function
   | [] -> printf("")
   | [Expr(e)] -> print_expr e;
-                 printf("\n");
-  | [Assign(a, e1)] ->
+  | [Assign(a, e)] ->
       print_leftvalue a;
       printf " = ";
-      print_expr e1;
+      print_expr e;
       printf ";";
-      printf("\n");
   | [If(a, b)] ->
       printf "if";
       print_expr a;
@@ -88,6 +86,15 @@ let rec print_stmt_list = function
      print_stmt_list [If(a, b)];
      printf "else{\n";
      print_stmt_list c;
+     printf "}\n";
+  | [For(a, b, c, d)] ->
+     printf "for(";
+     print_stmt_list [a];
+     print_expr b;
+     printf ";";
+     print_stmt_list [c];
+     printf "){\n";
+     print_stmt_list d;
      printf "}\n";
   | h :: t -> print_stmt_list [h];
               print_stmt_list t;;

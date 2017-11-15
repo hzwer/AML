@@ -1,6 +1,4 @@
-type operator = Add | Sub | Mul | Div
-
-and identifier = string
+type identifier = string
 
 and identifiers = identifier list                                
 
@@ -8,7 +6,7 @@ and expr =
   | Int of int
   | Var of string
   | Vec of expr * expr
-  | Binop of expr * operator * expr
+  | Binop of string * expr * expr
 
 and stmt =
   | Expr of expr

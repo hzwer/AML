@@ -7,10 +7,15 @@
 %token <int> INT
 %token IF
 %token ELSE
+%token FOR
 %token DEFINT
+%token MOD
 %token DEFVEC2I
 %token PLUS MINUS TIMES DIV
 %token LPAREN RPAREN
+%token NOT
+%token SEQ
+%token SNE
 %token EQUAL
 %token EOL
 %token EOF
@@ -18,7 +23,18 @@
 %token FUNC
 %token SEMICOLON
 %token LBRACE RBRACE
+%token AND
+%token OR
+%token BINAND
+%token BINXOR
+%token BINOR
+%token GT
+%token LT
+%token GE
+%token LE
 
+%left AND OR
+%left BINAND BINXOR BINOR
 %left PLUS MINUS
 %left DIV TIMES
 
@@ -77,15 +93,30 @@
   expr:
       | INT                           { Int($1) }
       | vec                           { $1 }
-      | IDENTIFIER                      { Var($1) }
+      | IDENTIFIER                    { Var($1) }
       | LPAREN expr RPAREN            { $2 }
-      | expr TIMES expr               { Binop($1, Mul, $3) }
-      | expr DIV expr                 { Binop($1, Div, $3) }
-      | expr PLUS expr                { Binop($1, Add, $3) }
-      | expr MINUS expr               { Binop($1, Sub, $3) };
-  
+      | binary_op                     { $1 }
+
+  binary_op:
+      | expr TIMES expr               { Binop("*", $1, $3) }
+      | expr DIV expr                 { Binop("/", $1, $3) }
+      | expr PLUS expr                { Binop("+", $1, $3) }
+      | expr MINUS expr               { Binop("-", $1, $3) }
+      | expr MOD expr                 { Binop("%", $1, $3) }
+      | expr GT expr                  { Binop(">", $1, $3) }
+      | expr LT expr                  { Binop("<", $1, $3) }
+      | expr GE expr                  { Binop(">=", $1, $3) }
+      | expr LE expr                  { Binop("<=", $1, $3) }
+      | expr SEQ expr                 { Binop("==", $1, $3) }
+      | expr SNE expr                 { Binop("!=", $1, $3) }
+      | expr AND expr                 { Binop("&&", $1, $3) }
+      | expr OR expr                 { Binop("||", $1, $3) }
+      | expr BINAND expr              { Binop("|", $1, $3) }
+      | expr BINOR expr               { Binop("&", $1, $3) }
+      | expr BINXOR expr               { Binop("^", $1, $3) }
+    
   declaration:
-    | DEFTYPE IDENTIFIER EQUAL expr     { Declar($1, $2, $4)};
+    | DEFTYPE IDENTIFIER EQUAL expr     { Declar($1, $2, $4)}
 
   assignment:
-    | IDENTIFIER EQUAL expr             { Assign($1, $3) };
+    | IDENTIFIER EQUAL expr             { Assign($1, $3) }

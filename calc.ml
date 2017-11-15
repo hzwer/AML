@@ -38,14 +38,8 @@ let int_int_calc a op b =
      print e1;
      printop op;
      print e2;;
-*)
-
-let printop = function
-  | Add -> printf " + "
-  | Sub -> printf " - "
-  | Mul -> printf " * "
-  | Div -> printf " / ";;
-
+ *)
+  
 let rec print_expr expr = 
   match expr with
   | Vec(a,b) -> 
@@ -56,10 +50,10 @@ let rec print_expr expr =
       printf ")";
   | Int(a) -> printf "%i" a;
   | Var(a) -> printf "%s" a;
-  | Binop(e1, op, e2) -> 
-      print_expr e1;
-      printop op;
-      print_expr e2;;
+  | Binop(op, e1, e2) -> 
+     print_expr e1;
+     printf " %s " op;
+     print_expr e2;;
 
 let rec print_stmt_list = function
   | [] -> printf("")
@@ -120,7 +114,7 @@ let rec geo_calc expr =
 let rec print_idens = function
   | [] -> printf ",";
   | [x] -> printf "%s" x;
-  | h :: t -> printf "%s," h;
+  | h :: t -> printf "%s, " h;
               print_idens t;;
   
 let rec print_toplevel = function

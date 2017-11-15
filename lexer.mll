@@ -13,6 +13,7 @@ rule token =
   | "func"         { FUNC }
   | "if"           { IF }
   | "else"         { ELSE }
+  | "for"          { FOR }
   | ['\n']         { EOL }
   | ['0'-'9']+ as lxm { INT(int_of_string lxm) }
   | '='            { EQUAL }
@@ -20,6 +21,19 @@ rule token =
   | '-'            { MINUS }
   | '*'            { TIMES }
   | '/'            { DIV }
+  | '%'            { MOD }
+  | '!'            { NOT }
+  | "=="           { SEQ }
+  | "!="           { SNE }
+  | '>'            { GT }
+  | '<'            { LT }
+  | ">="           { GE }
+  | "<="           { LE }
+  | "&&"           { AND }
+  | "||"           { OR }
+  | "&"            { BINAND}  
+  | "|"            { BINOR }
+  | "^"            { BINXOR }
   | '('            { LPAREN }
   | ')'            { RPAREN }
   | '{'            { LBRACE }

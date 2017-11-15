@@ -39,9 +39,17 @@ let int_int_calc a op b =
      printop op;
      print e2;;
  *)
+
+let rec print_idens = function
+  | [] -> printf ",";
+  | [x] -> printf "%s" x;
+  | h :: t -> printf "%s, " h;
+              print_idens t;;
+
+let rec print_leftvalue = function
+  | Identifier(a) -> print_idens [a];;
   
-let rec print_expr expr = 
-  match expr with
+let rec print_expr = function
   | Vec(a,b) -> 
       printf "vec2i(";
       print_expr a;
@@ -49,7 +57,10 @@ let rec print_expr expr =
       print_expr b;
       printf ")";
   | Int(a) -> printf "%i" a;
-  | Var(a) -> printf "%s" a;
+  | Bool(a) -> printf "%b" a;
+  | Float(a) -> printf "%f" a;
+  | String(a) -> printf "%s" a;
+  | Leftvalue(a) -> print_leftvalue a;
   | Binop(op, e1, e2) -> 
      print_expr e1;
      printf " %s " op;
@@ -60,12 +71,8 @@ let rec print_stmt_list = function
   | [Expr(e)] -> print_expr e;
                  printf("\n");
   | [Assign(a, e1)] ->
-      printf "%s = " a;
-      print_expr e1;
-      printf ";";
-      printf("\n");
-  | [Declar(typename, a, e1)] -> 
-      printf "%s = %s" typename a;
+      print_leftvalue a;
+      printf " = ";
       print_expr e1;
       printf ";";
       printf("\n");
@@ -77,7 +84,7 @@ let rec print_stmt_list = function
       printf "}\n";
   | [IfElse(a, b, c)] ->
      print_stmt_list [If(a, b)];
-     printf "else{";
+     printf "else{\n";
      print_stmt_list c;
      printf "}\n";
   | h :: t -> print_stmt_list [h];
@@ -111,12 +118,6 @@ let rec geo_calc expr =
           geo_calc(Binop(r1,op,e2));;
 *)
 
-let rec print_idens = function
-  | [] -> printf ",";
-  | [x] -> printf "%s" x;
-  | h :: t -> printf "%s, " h;
-              print_idens t;;
-  
 let rec print_toplevel = function
   | Stmts(e) ->
      printf("{\n");

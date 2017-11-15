@@ -2,8 +2,9 @@
 %token AGENT
 %token INIT
 %token STEP
+%token <float> FLOAT
+%token <string> STRING
 %token <string> IDENTIFIER
-%token <string> DEFTYPE
 %token <int> INT
 %token IF
 %token ELSE
@@ -35,6 +36,8 @@
 
 %left AND OR
 %left BINAND BINXOR BINOR
+%nonassoc SEQ SNE
+%nonassoc GT LT GE LE
 %left PLUS MINUS
 %left DIV TIMES
 
@@ -80,7 +83,6 @@
     
   stmt:
     | if_stmt                              { $1 }
-    | declaration SEMICOLON                { $1 }
     | assignment SEMICOLON                 { $1 }
     
   stmt_list:
@@ -91,11 +93,13 @@
     | LPAREN expr COMMA expr RPAREN { Vec($2, $4) }
   
   expr:
-      | INT                           { Int($1) }
-      | vec                           { $1 }
-      | IDENTIFIER                    { Var($1) }
-      | LPAREN expr RPAREN            { $2 }
-      | binary_op                     { $1 }
+    | INT                           { Int($1) }
+    | leftvalue                     { Leftvalue($1) }
+    | STRING                        { String($1) }
+    | FLOAT                         { Float($1) }
+    | vec                           { $1 }
+    | LPAREN expr RPAREN            { $2 }
+    | binary_op                     { $1 }
 
   binary_op:
       | expr TIMES expr               { Binop("*", $1, $3) }
@@ -111,12 +115,12 @@
       | expr SNE expr                 { Binop("!=", $1, $3) }
       | expr AND expr                 { Binop("&&", $1, $3) }
       | expr OR expr                 { Binop("||", $1, $3) }
-      | expr BINAND expr              { Binop("|", $1, $3) }
-      | expr BINOR expr               { Binop("&", $1, $3) }
+      | expr BINAND expr              { Binop("&", $1, $3) }
+      | expr BINOR expr               { Binop("|", $1, $3) }
       | expr BINXOR expr               { Binop("^", $1, $3) }
     
-  declaration:
-    | DEFTYPE IDENTIFIER EQUAL expr     { Declar($1, $2, $4)}
-
   assignment:
-    | IDENTIFIER EQUAL expr             { Assign($1, $3) }
+    | leftvalue EQUAL expr             { Assign($1, $3) }
+
+  leftvalue:
+    | IDENTIFIER                       { Identifier($1) }

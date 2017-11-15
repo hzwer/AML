@@ -1,23 +1,10 @@
-agent{
-  init
-  {
-      a = 1;
-  }
-  step
-  {
-      a = 1;
-  }
-}
-
-func f(a, b)
-{
-   a = a + b;
-   b = b - a;
-}
-
-{
-    if(a > 3 && a < 5)
-    {
-        a = 3 + 3;
-    }    
+func f(a){
+     if(a < 3 && a > 1)
+     {
+        s = "3";
+     }
+     else
+     {
+        d = 3.2;
+     }
 }

@@ -61,10 +61,12 @@ let rec print_expr = function
   | Float(a) -> printf "%f" a;
   | String(a) -> printf "%s" a;
   | Leftvalue(a) -> print_leftvalue a;
-  | Binop(op, e1, e2) -> 
+  | Binop(op, e1, e2) ->
+     printf ("(");
      print_expr e1;
      printf " %s " op;
-     print_expr e2;;
+     print_expr e2;
+     printf (")");;
 
 let rec print_stmt_list = function
   | [] -> printf("")
@@ -77,9 +79,9 @@ let rec print_stmt_list = function
       printf ";";
       printf("\n");
   | [If(a, b)] ->
-      printf "if(";
+      printf "if";
       print_expr a;
-      printf "){\n";
+      printf "{\n";
       print_stmt_list b;
       printf "}\n";
   | [IfElse(a, b, c)] ->

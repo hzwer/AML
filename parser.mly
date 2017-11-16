@@ -39,7 +39,9 @@
 %nonassoc SEQ SNE
 %nonassoc GT LT GE LE
 %left PLUS MINUS
-%left DIV TIMES
+%left DIV TIMES MOD
+%nonassoc IF
+%nonassoc ELSE
 
 %start main
 %type <Ast.t> main
@@ -49,10 +51,8 @@
     toplevel_list EOF               { $1 }
 
   toplevel:
-    | stmt_list { Stmts $1 }
-    | LBRACE stmt_list RBRACE { Stmts $2 }    
     | FUNC IDENTIFIER LPAREN identifier_list RPAREN
-      LBRACE stmt_list RBRACE
+      LBRACE block_list RBRACE
       { Function($2, $4, $7) }
     | AGENT LBRACE init step RBRACE { Agent($3, $4) }
     
@@ -61,10 +61,10 @@
     | toplevel toplevel_list      { $1 :: $2 }
 
   init:
-    | INIT LBRACE stmt_list RBRACE    { $3 }
+    | INIT LBRACE block_list RBRACE    { $3 }
   
   step:
-    | STEP LBRACE stmt_list RBRACE   { $3 }
+    | STEP LBRACE block_list RBRACE   { $3 }
     
   identifier_list:
     | { [] }
@@ -75,25 +75,29 @@
 
   for_stmt:
     | FOR LPAREN assignment SEMICOLON expr SEMICOLON assignment RPAREN
-    LBRACE stmt_list RBRACE
+    LBRACE block_list RBRACE
           { For($3, $5, $7, $10) }
-    
+
+  call_stmt:
+    | IDENTIFIER LPAREN identifier_list RPAREN { Call($1, $3) }
+      
   if_stmt:
-    | IF LPAREN expr RPAREN LBRACE stmt_list RBRACE
+    | IF LPAREN expr RPAREN LBRACE block_list RBRACE
          { If($3, $6) }
     | IF LPAREN expr RPAREN
-         LBRACE stmt_list RBRACE
-         ELSE LBRACE stmt_list RBRACE
+         LBRACE block_list RBRACE
+         ELSE LBRACE block_list RBRACE
          { IfElse($3, $6, $10) }
     
   stmt:
+    | call_stmt SEMICOLON                  { $1 }
     | if_stmt                              { $1 }
     | for_stmt                             { $1 }
-    | assignment SEMICOLON                 { $1 }
+    | assignment SEMICOLON                 { Stmt($1) }
     
-  stmt_list:
+  block_list:
     | { [] }
-    | stmt stmt_list                 { $1 :: $2 }
+    | stmt block_list                 { $1 :: $2 }
     
   vec:
     | LPAREN expr COMMA expr RPAREN { Vec($2, $4) }

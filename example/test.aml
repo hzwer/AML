@@ -1,9 +1,8 @@
-for(i = 1; i < 2; i = 3)
-{
-    i = 1;
+func g(){
+     f();
 }
 
-func f(a){
+func f(a, b){
      if(a < 3 && a >= (1 ^ 2))
      {
         for(i = 1; i < 2; i = i + 1)

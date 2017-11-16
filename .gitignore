@@ -15,3 +15,7 @@ parser.mli
 *.mli
 
 *.aml~
+
+*.output
+
+*.mly#

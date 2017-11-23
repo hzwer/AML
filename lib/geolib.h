@@ -35,21 +35,29 @@ const Float _PI=acos(-1.0);
 class angle{//[-PI,PI]
 public:
     Float x,y;
-    Float rad;
-    void _normalize(void){
-        if(rad<-_PI){
-            Float n=ceil(rad/(2*PI));
-            rad=rad-n*2*PI;
-        }
-        else if(rad>=PI){
-            Float n=floor(rad/(2*PI));
-            rad=rad-n*2*PI;
-        }
-        if(rad<-_PI){
-            rad+=2*PI;
-        }
-        if(rad>=PI){
-            rad-=2*PI;
-        }
+    angle(){}
+    angle(Float r){
+        x=cos(r);
+        y=sin(r);
+    }
+    angle(Float _x,Float _y){
+        x=_x;
+        y=_y;
+    }
+    angle operator + (Float d){
+        //cos(a+b)=cos(a)cos(b)-sin(a)sin(b)
+        //sin(a+b)=cos(a)sin(b)+sin(a)cos(b)
+        return angle(x*cos(d)-y*sin(d),  x*sin(d)+y*cos(d));
+    }
+    angle operator - (Float d){
+        //cos(a-b)=cos(a)cos(b)+sin(a)sin(b)
+        //sin(a-b)=sin(a)cos(b)-cos(a)sin(b)
+        return angle(x*cos(d)+y*sin(d), -x*sin(d)+y*cos(d));
+    }
+    angle operator * (Float d){
+        Float r=atan2(y,x);
+        return angle(r*d);
+    }
+    angle _approach(const angle &tgt,const angle &lw,const angle &hi){
     }
 };

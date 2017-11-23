@@ -19,3 +19,4 @@ parser.mli
 *.output
 
 *.mly#
+*.swp

@@ -31,3 +31,25 @@ public:
     Float _sqrlen(void){return x*x+y*y;}
     vec3f _crossprd(const vec3f &b){return vec3f(y*b.z-z*b.y,z*b.x-x*b.z,x*b.y-y*b.x);}
 };
+const Float _PI=acos(-1.0);
+class angle{//[-PI,PI]
+public:
+    Float x,y;
+    Float rad;
+    void _normalize(void){
+        if(rad<-_PI){
+            Float n=ceil(rad/(2*PI));
+            rad=rad-n*2*PI;
+        }
+        else if(rad>=PI){
+            Float n=floor(rad/(2*PI));
+            rad=rad-n*2*PI;
+        }
+        if(rad<-_PI){
+            rad+=2*PI;
+        }
+        if(rad>=PI){
+            rad-=2*PI;
+        }
+    }
+};

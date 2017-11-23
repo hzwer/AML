@@ -38,58 +38,70 @@ let int_int_calc a op b =
      print e1;
      printop op;
      print e2;;
-*)
+ *)
+let rec print_ind ind str= 
+  if (ind > 0) then (printf("    "); print_ind (ind - 1) str)
+  else printf "%s" str;;
+     
+let rec print_idens = function
+  | [] -> "";
+  | [x] -> x;
+  | h :: t -> h ^ ", " ^ (print_idens t);;
 
-let printop = function
-  | Add -> printf " + "
-  | Sub -> printf " - "
-  | Mul -> printf " * "
-  | Div -> printf " / ";;
-
-let rec print_expr expr = 
-  match expr with
+let rec print_leftvalue = function
+  | Identifier(a) -> print_idens [a];;
+  
+let rec expr = function
   | Vec(a,b) -> 
-      printf "vec2i(";
-      print_expr a;
-      printf ",";
-      print_expr b;
-      printf ")";
-  | Int(a) -> printf "%i" a;
-  | Var(a) -> printf "%s" a;
-  | Binop(e1, op, e2) -> 
-      print_expr e1;
-      printop op;
-      print_expr e2;;
+      "vec2i(" ^ (expr a) ^ "," ^ (expr b) ^ ")";
+  | Int(a) -> string_of_int(a);
+  | Bool(a) -> string_of_bool(a);
+  | Float(a) -> string_of_float(a);
+  | String(a) -> a;
+  | Leftvalue(a) -> print_leftvalue a;
+  | Binop(op, e1, e2) ->
+     "(" ^ (expr e1) ^ " " ^ op ^ " " ^ (expr e2) ^ ")";;
 
-let rec print_stmt_list = function
-  | [] -> printf("")
-  | [Expr(e)] -> print_expr e;
-                 printf("\n");
-  | [Assign(a, e1)] ->
-      printf "%s = " a;
-      print_expr e1;
+let print_stmt = function
+  Assign(a, e) -> printf "%s" ((print_leftvalue a) ^ " = " ^ (expr e));;
+  
+let rec print_block_list ind = function
+  | [] -> printf("");
+  | [Expr(e)] -> print_ind ind (expr e);
+  | [Stmt(Assign(a, e))] ->
+      print_ind ind ((print_leftvalue a) ^ " = " ^ (expr e));
       printf ";";
-      printf("\n");
-  | [Declar(typename, a, e1)] -> 
-      printf "%s = %s" typename a;
-      print_expr e1;
-      printf ";";
-      printf("\n");
   | [If(a, b)] ->
-      printf "if(";
-      print_expr a;
-      printf "){\n";
-      print_stmt_list b;
-      printf "}\n";
+      print_ind ind "if";
+      printf "%s" (expr a);
+      printf "{\n";
+      print_block_list (ind + 1) b;
+      printf("\n");
+      print_ind ind "}";
   | [IfElse(a, b, c)] ->
-     print_stmt_list [If(a, b)];
-     printf "else{";
-     print_stmt_list c;
-     printf "}\n";
-  | h :: t -> print_stmt_list [h];
-              print_stmt_list t;;
-            
-            
+     print_block_list ind [If(a, b)];
+     printf "\n";
+     print_ind ind "else{\n";
+     print_block_list (ind + 1) c;
+     printf "\n";
+     print_ind ind "}\n";
+  | [For(a, b, c, d)] ->
+     print_ind ind "for(";
+     print_stmt a;
+     printf "; ";
+     printf "%s" (expr b);
+     printf "; ";
+     print_stmt c;
+     printf "){\n";
+     print_block_list (ind + 1) d;
+     printf("\n");
+     print_ind ind "}\n";
+  | [Call(identifier, identifiers)] ->
+     print_ind ind identifier;
+     printf "(%s)" (print_idens identifiers);
+     printf ";\n";     
+  | h :: t -> print_block_list ind [h];
+              print_block_list ind t;;
  
 (*
 let rec geo_calc expr =
@@ -117,36 +129,29 @@ let rec geo_calc expr =
           geo_calc(Binop(r1,op,e2));;
 *)
 
-let rec print_idens = function
-  | [] -> printf ",";
-  | [x] -> printf "%s" x;
-  | h :: t -> printf "%s," h;
-              print_idens t;;
-  
 let rec print_toplevel = function
   | Stmts(e) ->
      printf("{\n");
-     print_stmt_list e;
+     print_block_list 1 e;
      printf("}\n");
   | Agent(init_list, step_list) ->
-      printf("Agent{\nInit{\n");
-      print_stmt_list init_list;
-      printf("}\nvoid Step(){\n");
-      print_stmt_list step_list;
-      printf("}\n};\n");
-  | Function(identifier, identifiers, stmt_list) ->
-     printf("void ");
+     printf("Agent{\nInit{\n");
+     print_block_list 0 init_list;
+     printf("}\nvoid Step(){\n");
+     print_block_list 0 step_list;
+     printf("}\n};\n");
+  | Function(identifier, identifiers, block_list) ->
+     print_ind 0 "void ";
      printf "%s" identifier;
-     printf("(");
-     print_idens identifiers;
-     printf("){\n");
-     print_stmt_list stmt_list;
+     printf "(%s)" (print_idens identifiers);
+     printf("{\n");
+     print_block_list 1 block_list;
      printf("}\n");;
 
 let rec print_t = function
   | [] -> printf("")
-  | [x] -> print_toplevel(x);
-  | h :: t -> print_toplevel(h);
+  | [x] -> print_toplevel x;
+  | h :: t -> print_toplevel h;
               print_t(t);;
 
 let addlib lib =

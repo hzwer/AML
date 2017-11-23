@@ -1,27 +1,35 @@
-type operator = Add | Sub | Mul | Div
+type identifier = string
 
-and identifier = string
-
-and identifiers = identifier list                                
-
+and identifiers = identifier list
+                 
+and leftvalue =
+  | Identifier of identifier                
+                
 and expr =
+  | Bool of bool
   | Int of int
-  | Var of string
+  | Float of float
+  | String of string
+  | Leftvalue of leftvalue
   | Vec of expr * expr
-  | Binop of expr * operator * expr
+  | Binop of string * expr * expr
 
-and stmt =
+and stmt = 
+  | Assign of (leftvalue * expr)
+  
+and block =
+  | Stmt of (stmt)
   | Expr of expr
-  | Assign of string * expr
-  | Declar of string * string * expr (*int a=1+2; 3 params are 'int', 'a', '1+2'*)
-  | If of (expr * stmt_list)
-  | IfElse of (expr * stmt_list * stmt_list)
+  | Call of (identifier * identifiers)
+  | If of (expr * block_list)
+  | IfElse of (expr * block_list * block_list)
+  | For of (stmt * expr * stmt * block_list)
             
-and stmt_list = stmt list
+and block_list = block list
 
 and toplevel = 
-  | Stmts of stmt_list
-  | Agent of stmt_list * stmt_list
-  | Function of (identifier * identifiers * stmt_list)
+  | Stmts of block_list
+  | Agent of block_list * block_list
+  | Function of (identifier * identifiers * block_list)
 
 and t = toplevel list             

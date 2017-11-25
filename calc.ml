@@ -62,28 +62,33 @@ let rec expr = function
   | Binop(op, e1, e2) ->
      "(" ^ (expr e1) ^ " " ^ op ^ " " ^ (expr e2) ^ ")";;
 
+let print_type = function 
+  | Builtintype(a) -> a;;
+  
 let print_stmt = function
-  Assign(a, e) -> printf "%s" ((print_leftvalue a) ^ " = " ^ (expr e));;
+  | Assign(a, e) -> printf "%s" ((print_leftvalue a) ^ " = " ^ (expr e));
+  | Declaration(t, a, e) -> printf "%s" ((print_type t) ^ " " ^ (print_leftvalue a) ^ " = " ^ (expr e));;
   
 let rec print_block_list ind = function
   | [] -> printf("");
   | [Expr(e)] -> print_ind ind (expr e);
   | [Stmt(Assign(a, e))] ->
-      print_ind ind ((print_leftvalue a) ^ " = " ^ (expr e));
-      printf ";";
+     print_ind ind ((print_leftvalue a) ^ " = " ^ (expr e));
+     printf ";\n";     
+  | [Stmt(Declaration(t, a, e))] ->
+     print_ind ind ((print_type t) ^ " " ^ (print_leftvalue a) ^ " = " ^ (expr e));
+     printf ";\n";
   | [If(a, b)] ->
-      print_ind ind "if";
-      printf "%s" (expr a);
-      printf "{\n";
-      print_block_list (ind + 1) b;
-      printf("\n");
-      print_ind ind "}";
+     print_ind ind "if";
+     printf "%s" (expr a);
+     printf "{\n";
+     print_block_list (ind + 1) b;
+     print_ind ind "}";
   | [IfElse(a, b, c)] ->
      print_block_list ind [If(a, b)];
      printf "\n";
      print_ind ind "else{\n";
      print_block_list (ind + 1) c;
-     printf "\n";
      print_ind ind "}\n";
   | [For(a, b, c, d)] ->
      print_ind ind "for(";
@@ -94,7 +99,6 @@ let rec print_block_list ind = function
      print_stmt c;
      printf "){\n";
      print_block_list (ind + 1) d;
-     printf("\n");
      print_ind ind "}\n";
   | [Call(identifier, identifiers)] ->
      print_ind ind identifier;
@@ -130,10 +134,6 @@ let rec geo_calc expr =
 *)
 
 let rec print_toplevel = function
-  | Stmts(e) ->
-     printf("{\n");
-     print_block_list 1 e;
-     printf("}\n");
   | Agent(init_list, step_list) ->
      printf("Agent{\nInit{\n");
      print_block_list 0 init_list;

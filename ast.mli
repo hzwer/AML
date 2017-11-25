@@ -1,9 +1,14 @@
 type identifier = string
-
+                
+and ttype = string
+                 
 and identifiers = identifier list
                  
 and leftvalue =
   | Identifier of identifier                
+
+and builtintype =
+  | Builtintype of ttype
                 
 and expr =
   | Bool of bool
@@ -16,9 +21,10 @@ and expr =
 
 and stmt = 
   | Assign of (leftvalue * expr)
-  
+  | Declaration of (builtintype * leftvalue * expr)
+            
 and block =
-  | Stmt of (stmt)
+  | Stmt of stmt
   | Expr of expr
   | Call of (identifier * identifiers)
   | If of (expr * block_list)
@@ -28,7 +34,6 @@ and block =
 and block_list = block list
 
 and toplevel = 
-  | Stmts of block_list
   | Agent of block_list * block_list
   | Function of (identifier * identifiers * block_list)
 

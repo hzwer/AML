@@ -22,6 +22,12 @@ rule token =
   | "if"           { IF }
   | "else"         { ELSE }
   | "for"          { FOR }
+  | "int"          { TINT }
+  | "double"       { TDOUBLE }
+  | "string"       { TSTRING }
+  | "bool"         { TBOOL }
+  | "true"         { true }
+  | "false"        { false }
   | ['\n']         { EOL }
   | int            { INT (int_of_string (Lexing.lexeme lexbuf)) }
   | float          { FLOAT (float_of_string (Lexing.lexeme lexbuf)) }

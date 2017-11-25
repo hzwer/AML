@@ -6,6 +6,12 @@
 %token <string> STRING
 %token <string> IDENTIFIER
 %token <int> INT
+%token TINT
+%token TDOUBLE
+%token TSTRING
+%token TBOOL
+%token true
+%token false
 %token IF
 %token ELSE
 %token FOR
@@ -94,6 +100,7 @@
     | if_stmt                              { $1 }
     | for_stmt                             { $1 }
     | assignment SEMICOLON                 { Stmt($1) }
+    | declaration SEMICOLON                { Stmt($1) }
     
   block_list:
     | { [] }
@@ -101,7 +108,13 @@
     
   vec:
     | LPAREN expr COMMA expr RPAREN { Vec($2, $4) }
-  
+
+  builtintype:
+    | TINT                           { Builtintype("int") }
+    | TDOUBLE                        { Builtintype("double") }
+    | TSTRING                       { Builtintype("string") }
+    | TBOOL                          { Builtintype("bool") }
+    
   expr:
     | INT                           { Int($1) }
     | leftvalue                     { Leftvalue($1) }
@@ -128,9 +141,12 @@
       | expr BINAND expr              { Binop("&", $1, $3) }
       | expr BINOR expr               { Binop("|", $1, $3) }
       | expr BINXOR expr               { Binop("^", $1, $3) }
+   
+  declaration:
+      | builtintype leftvalue EQUAL expr        { Declaration($1, $2, $4) }      
     
   assignment:
-    | leftvalue EQUAL expr             { Assign($1, $3) }
+      | leftvalue EQUAL expr             { Assign($1, $3) }    
 
   leftvalue:
-    | IDENTIFIER                       { Identifier($1) }
+      | IDENTIFIER                       { Identifier($1) }

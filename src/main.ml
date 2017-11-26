@@ -62,7 +62,9 @@ let rec expr = function
   | Vector(a, b) -> "Vec(" ^ string_of_float(a) ^ ", " ^ string_of_float(b) ^ ")"
   | Leftvalue(a) -> print_leftvalue a;
   | Binop(op, e1, e2) ->
-     "(" ^ (expr e1) ^ " " ^ op ^ " " ^ (expr e2) ^ ")";;
+     "(" ^ (expr e1) ^ " " ^ op ^ " " ^ (expr e2) ^ ")";
+  | Unop(op, e) ->
+    op ^ (expr e);;
 
 let print_type = function 
   | Builtintype(a) -> a;;

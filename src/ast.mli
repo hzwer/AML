@@ -19,6 +19,7 @@ and expr =
   | Vector of float * float
   | Leftvalue of leftvalue
   | Vec of expr * expr
+  | Unop of string * expr
   | Binop of string * expr * expr
 
 and exprs = expr list           

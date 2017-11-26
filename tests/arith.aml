@@ -6,4 +6,7 @@ func arith(){
      println((2 + 8) / 3);
      println(2 == 2, 2 != 2, 3 > 2);
      println(4 < 5, 6 >= 2, 19 <= 30);
+     println(!true);
+     println(!false);
+     println(!(2 - 1));
 }

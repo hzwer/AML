@@ -11,7 +11,7 @@ AML is implemented in OCaml
 1. opam install ocamlfind
 2. Clone with git
 3. make
-4. ./main
+4. ./main.native [file]
 
 ## Syntax
 

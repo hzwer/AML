@@ -88,6 +88,7 @@
     | leftvalue                     { Leftvalue($1) }
     | LPAREN expr RPAREN            { $2 }
     | binary_op                     { $1 }
+    | unary_op                      { $1 }
 
   expr_list:
     | { [] }
@@ -127,31 +128,34 @@
     | LPAREN expr COMMA expr RPAREN { Vec($2, $4) }
 
   builtintype:
-    | TINT                           { Builtintype("int") }
-    | TDOUBLE                        { Builtintype("double") }
-    | TSTRING                        { Builtintype("string") }
-    | TBOOL                          { Builtintype("bool") }
-    | TDEGREE                        { Builtintype("Deg") }
-    | TVECTOR                        { Builtintype("Vec") }
+    | TINT                          { Builtintype("int") }
+    | TDOUBLE                       { Builtintype("double") }
+    | TSTRING                       { Builtintype("string") }
+    | TBOOL                         { Builtintype("bool") }
+    | TDEGREE                       { Builtintype("Deg") }
+    | TVECTOR                       { Builtintype("Vec") }
+
+  unary_op:
+    | NOT expr                      { Unop ("!", $2) }
     
   binary_op:
-      | expr TIMES expr               { Binop("*", $1, $3) }
-      | expr DIV expr                 { Binop("/", $1, $3) }
-      | expr PLUS expr                { Binop("+", $1, $3) }
-      | expr MINUS expr               { Binop("-", $1, $3) }
-      | expr MOD expr                 { Binop("%", $1, $3) }
-      | expr GT expr                  { Binop(">", $1, $3) }
-      | expr LT expr                  { Binop("<", $1, $3) }
-      | expr GE expr                  { Binop(">=", $1, $3) }
-      | expr LE expr                  { Binop("<=", $1, $3) }
-      | expr SEQ expr                 { Binop("==", $1, $3) }
-      | expr SNE expr                 { Binop("!=", $1, $3) }
-      | expr AND expr                 { Binop("&&", $1, $3) }
-      | expr OR expr                 { Binop("||", $1, $3) }
-      | expr BINAND expr              { Binop("&", $1, $3) }
-      | expr BINOR expr               { Binop("|", $1, $3) }
-      | expr BINXOR expr               { Binop("^", $1, $3) }
-   
+    | expr TIMES expr               { Binop("*", $1, $3) }
+    | expr DIV expr                 { Binop("/", $1, $3) }
+    | expr PLUS expr                { Binop("+", $1, $3) }
+    | expr MINUS expr               { Binop("-", $1, $3) }
+    | expr MOD expr                 { Binop("%", $1, $3) }
+    | expr GT expr                  { Binop(">", $1, $3) }
+    | expr LT expr                  { Binop("<", $1, $3) }
+    | expr GE expr                  { Binop(">=", $1, $3) }
+    | expr LE expr                  { Binop("<=", $1, $3) }
+    | expr SEQ expr                 { Binop("==", $1, $3) }
+    | expr SNE expr                 { Binop("!=", $1, $3) }
+    | expr AND expr                 { Binop("&&", $1, $3) }
+    | expr OR expr                  { Binop("||", $1, $3) }
+    | expr BINAND expr              { Binop("&", $1, $3) }
+    | expr BINOR expr               { Binop("|", $1, $3) }
+    | expr BINXOR expr              { Binop("^", $1, $3) }
+    
   declaration:
       | builtintype leftvalue EQUAL expr        { Declaration($1, $2, $4) }
       | TINT leftvalue                        { Declaration(Builtintype("int"), $2, Int(0)) }

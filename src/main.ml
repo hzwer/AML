@@ -177,11 +177,12 @@ let read_all file =
   in aux (open_in file);;
 
 let _ =
-  printf "/*produced by AML*/";
-  print_newline();
+  printf "/*produced by AML*/\n";
   (*addlib "lib/header.ml";*)
+
   let lexbuf = read_all "./example/test.aml" in 
   let tokens = Lexing.from_string lexbuf in
   let t = Parser.main Lexer.token tokens in 
   print_t(t);
+  
   (*addlib "lib/tail.ml";*)

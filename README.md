@@ -8,9 +8,10 @@ AML is implemented in OCaml
 
 ## Build from source
 
-1. Clone with git 
-2. make
-3. ./calc
+1. opam install ocamlfind
+2. Clone with git
+3. make
+4. ./main
 
 ## Syntax
 

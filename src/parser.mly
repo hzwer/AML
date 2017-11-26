@@ -1,10 +1,12 @@
 %{ open Ast %}
+%{ open Method %}
 %token AGENT
 %token INIT
 %token STEP
 %token <float> FLOAT
 %token <string> STRING
 %token <string> IDENTIFIER
+%token <string> COMMENT
 %token <int> INT
 %token <bool> BOOL
 %token TINT
@@ -58,10 +60,9 @@
   main:
     toplevel_list EOF               { $1 }
 
-  toplevel:
+toplevel:
     | FUNC IDENTIFIER LPAREN identifier_list RPAREN
-      LBRACE block_list RBRACE
-      { Function($2, $4, $7) }
+      LBRACE block_list RBRACE      { Function($2, $4, $7) }
     | AGENT LBRACE init step RBRACE { Agent($3, $4) }
     
   toplevel_list:
@@ -117,6 +118,7 @@
     | call_stmt SEMICOLON                  { $1 }
     | if_stmt                              { $1 }
     | for_stmt                             { $1 }
+    | COMMENT                              { Comment($1) }
     | assignment SEMICOLON                 { Stmt($1) }
     | declaration SEMICOLON                { Stmt($1) }
     
@@ -157,13 +159,8 @@
     | expr BINXOR expr              { Binop("^", $1, $3) }
     
   declaration:
-      | builtintype leftvalue EQUAL expr        { Declaration($1, $2, $4) }
-      | TINT leftvalue                        { Declaration(Builtintype("int"), $2, Int(0)) }
-      | TDOUBLE leftvalue                        { Declaration(Builtintype("double"), $2, Float(0.0)) }
-      | TSTRING leftvalue                        { Declaration(Builtintype("string"), $2, String("")) }
-      | TBOOL leftvalue                        { Declaration(Builtintype("bool"), $2, Bool(false)) }
-      | TDEGREE leftvalue                        { Declaration(Builtintype("Deg"), $2, Degree((1., 0.))) }
-      | TVECTOR leftvalue                        { Declaration(Builtintype("Vec"), $2, Vector((0., 0.))) }
+    | builtintype leftvalue EQUAL expr         { Declaration($1, $2, $4) }
+    | builtintype leftvalue                    { Declaration($1, $2, init_val($1)) }
     
   assignment:
       | leftvalue EQUAL expr             { Assign($1, $3) }    

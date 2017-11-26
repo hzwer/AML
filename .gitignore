@@ -30,3 +30,5 @@ example/agent.cpp
 example/calc.cpp
 
 example/variable.cpp
+
+*.out

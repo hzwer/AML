@@ -1,6 +1,7 @@
 {
   open Parser
-  exception Eof
+
+  exception SyntaxError of string
 }
 
 let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '0'-'9' '_']*
@@ -12,9 +13,12 @@ let frac = '.' digit*
 let exp = ['e' 'E'] ['-' '+']? digit+
 let float = digit* frac? exp?
 let string = ['"'] ['a'-'z' 'A'-'Z' '0'-'9' '_']* ['"']
+let newline = '\r' | '\n' | "\r\n"
               
 rule token =
-  parse [' ' '\t']     { token lexbuf }
+  parse
+  | [' ' '\t']+    { token lexbuf }
+  | newline        { EOL}
   | "agent"        { AGENT }
   | "init"         { INIT }
   | "step"         { STEP }
@@ -31,7 +35,6 @@ rule token =
   | "true"         { BOOL (true) }
   | "false"        { BOOL (false) }
   | "println"      { PRINTLN }
-  | ['\n']         { EOL }
   | int            { INT (int_of_string (Lexing.lexeme lexbuf)) }
   | float          { FLOAT (float_of_string (Lexing.lexeme lexbuf)) }
   | string         { STRING (Lexing.lexeme lexbuf) }
@@ -51,14 +54,25 @@ rule token =
   | "&&"           { AND }
   | "||"           { OR }
   | "&"            { BINAND}  
-  | "|"            { BINOR }
-  | "^"            { BINXOR }
+  | '|'            { BINOR }
+  | '^'            { BINXOR }
   | '('            { LPAREN }
   | ')'            { RPAREN }
   | '{'            { LBRACE }
   | '}'            { RBRACE }
   | ';'            { SEMICOLON }
   | ','            { COMMA }
+  | "//"           { read_line_comment (Buffer.create 128) lexbuf }
   | ident          { IDENTIFIER (Lexing.lexeme lexbuf) }
   | eof            { EOF }
+  | _              { raise (SyntaxError (
+                   "Unexpected char: " ^ Lexing.lexeme lexbuf)) }
   
+and read_line_comment buf =
+  parse
+  | newline  { COMMENT (Buffer.contents buf) }
+  | eof      { COMMENT (Buffer.contents buf) }
+  | _
+      { Buffer.add_string buf (Lexing.lexeme lexbuf);
+        read_line_comment buf lexbuf
+      }

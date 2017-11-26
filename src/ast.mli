@@ -24,7 +24,7 @@ and expr =
 
 and exprs = expr list           
 
-and stmt = 
+and stmt =  
   | Assign of (leftvalue * expr)
   | Declaration of (builtintype * leftvalue * expr)
             
@@ -36,6 +36,8 @@ and block =
   | If of (expr * block_list)
   | IfElse of (expr * block_list * block_list)
   | For of (stmt * expr * stmt * block_list)
+  | Comment of string
+  | Empty
             
 and block_list = block list
 
@@ -43,4 +45,4 @@ and toplevel =
   | Agent of block_list * block_list
   | Function of (identifier * identifiers * block_list)
 
-and t = toplevel list             
+and t = toplevel list;;

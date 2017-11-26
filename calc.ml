@@ -57,7 +57,7 @@ let rec expr = function
   | Int(a) -> string_of_int(a);
   | Bool(a) -> string_of_bool(a);
   | Float(a) -> string_of_float(a);
-  | String(a) -> a;
+  | String(a) -> "\"" ^ a ^ "\"";
   | Leftvalue(a) -> print_leftvalue a;
   | Binop(op, e1, e2) ->
      "(" ^ (expr e1) ^ " " ^ op ^ " " ^ (expr e2) ^ ")";;

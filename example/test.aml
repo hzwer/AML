@@ -1,5 +1,8 @@
 func g(){
-     int a = 3;
+     int a;
+     double b;
+     string c;
+     bool d;
      f();
 }
 

@@ -143,7 +143,11 @@
       | expr BINXOR expr               { Binop("^", $1, $3) }
    
   declaration:
-      | builtintype leftvalue EQUAL expr        { Declaration($1, $2, $4) }      
+      | builtintype leftvalue EQUAL expr        { Declaration($1, $2, $4) }
+      | TINT leftvalue                        { Declaration(Builtintype("int"), $2, Int(0)) }
+      | TDOUBLE leftvalue                        { Declaration(Builtintype("double"), $2, Float(0.0)) }
+      | TSTRING leftvalue                        { Declaration(Builtintype("string"), $2, String("")) }
+      | TBOOL leftvalue                        { Declaration(Builtintype("bool"), $2, Bool(false)) }
     
   assignment:
       | leftvalue EQUAL expr             { Assign($1, $3) }    

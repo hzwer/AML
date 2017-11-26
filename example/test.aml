@@ -1,20 +1,16 @@
-func g(){
-     int a;
-     double b;
-     string c;
-     bool d;
-     f();
+func variable_init(){
+     int i;
+     double f;
+     string s;
+     bool b;
+     deg d;
+     vec v;
 }
 
-func f(a, b){
-     if(a < 3 && a >= (1 ^ 2))
+func loop(){
+     int i;
+     for(i = 0; i < 5; i = i + 1)
      {
-        for(i = 1; i < 2; i = i + 1)
-        {s = "4";}
-        a = 3 + 2;
-     }
-     else
-     {
-        d = (3.2 + 2.3) * 10 ;
+
      }
 }

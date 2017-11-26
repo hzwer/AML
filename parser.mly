@@ -10,6 +10,8 @@
 %token TDOUBLE
 %token TSTRING
 %token TBOOL
+%token TDEGREE
+%token TVECTOR
 %token true
 %token false
 %token IF
@@ -112,8 +114,10 @@
   builtintype:
     | TINT                           { Builtintype("int") }
     | TDOUBLE                        { Builtintype("double") }
-    | TSTRING                       { Builtintype("string") }
+    | TSTRING                        { Builtintype("string") }
     | TBOOL                          { Builtintype("bool") }
+    | TDEGREE                        { Builtintype("Deg") }
+    | TVECTOR                        { Builtintype("Vec") }
     
   expr:
     | INT                           { Int($1) }
@@ -148,6 +152,8 @@
       | TDOUBLE leftvalue                        { Declaration(Builtintype("double"), $2, Float(0.0)) }
       | TSTRING leftvalue                        { Declaration(Builtintype("string"), $2, String("")) }
       | TBOOL leftvalue                        { Declaration(Builtintype("bool"), $2, Bool(false)) }
+      | TDEGREE leftvalue                        { Declaration(Builtintype("Deg"), $2, Degree((1., 0.))) }
+      | TVECTOR leftvalue                        { Declaration(Builtintype("Vec"), $2, Vector((0., 0.))) }
     
   assignment:
       | leftvalue EQUAL expr             { Assign($1, $3) }    

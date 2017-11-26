@@ -15,6 +15,8 @@ and expr =
   | Int of int
   | Float of float
   | String of string
+  | Degree of float * float
+  | Vector of float * float
   | Leftvalue of leftvalue
   | Vec of expr * expr
   | Binop of string * expr * expr

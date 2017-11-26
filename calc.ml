@@ -58,6 +58,8 @@ let rec expr = function
   | Bool(a) -> string_of_bool(a);
   | Float(a) -> string_of_float(a);
   | String(a) -> "\"" ^ a ^ "\"";
+  | Degree(a, b) -> "Deg(" ^ string_of_float(a) ^ ", " ^ string_of_float(b) ^ ")"
+  | Vector(a, b) -> "Vec(" ^ string_of_float(a) ^ ", " ^ string_of_float(b) ^ ")"
   | Leftvalue(a) -> print_leftvalue a;
   | Binop(op, e1, e2) ->
      "(" ^ (expr e1) ^ " " ^ op ^ " " ^ (expr e2) ^ ")";;

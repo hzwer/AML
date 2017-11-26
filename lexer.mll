@@ -22,10 +22,12 @@ rule token =
   | "if"           { IF }
   | "else"         { ELSE }
   | "for"          { FOR }
-  | "int"          { TINT }
+  | "int"          { TINT }  
   | "double"       { TDOUBLE }
   | "string"       { TSTRING }
   | "bool"         { TBOOL }
+  | "deg"          { TDEGREE }
+  | "vec"          { TVECTOR }
   | "true"         { true }
   | "false"        { false }
   | ['\n']         { EOL }

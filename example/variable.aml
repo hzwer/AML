@@ -6,11 +6,3 @@ func variable_init(){
      deg d;
      vec v;
 }
-
-func loop(){
-     int i;
-     for(i = 0; i < 5; i = i + 1)
-     {
-
-     }
-}

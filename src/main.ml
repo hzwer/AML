@@ -177,12 +177,15 @@ let read_all file =
   in aux (open_in file);;
 
 let _ =
-  printf "/*produced by AML*/\n";
-  (*addlib "lib/header.ml";*)
-
-  let lexbuf = read_all "./example/test.aml" in 
-  let tokens = Lexing.from_string lexbuf in
-  let t = Parser.main Lexer.token tokens in 
-  print_t(t);
+  if Array.length Sys.argv = 1 then printf "Expect ./main.native [file]\n"
+  else let file = Sys.argv.(1) in
   
-  (*addlib "lib/tail.ml";*)
+       printf "/*produced by AML*/\n";
+       (*addlib "lib/header.ml";*)
+       
+       let lexbuf = read_all file in 
+       let tokens = Lexing.from_string lexbuf in
+       let t = Parser.main Lexer.token tokens in 
+       print_t(t);
+       
+       (*addlib "lib/tail.ml";*)

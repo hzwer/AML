@@ -22,3 +22,11 @@ main
 *.byte
 
 *.native
+
+example/loop.cpp
+
+example/agent.cpp
+
+example/calc.cpp
+
+example/variable.cpp

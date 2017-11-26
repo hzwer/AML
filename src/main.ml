@@ -52,14 +52,12 @@ let rec print_leftvalue = function
   | Identifier(a) -> print_idens [a];;
   
 let rec expr = function
-  | Vec(a,b) -> 
-      "vec2i(" ^ (expr a) ^ "," ^ (expr b) ^ ")";
   | Int(a) -> string_of_int(a);
   | Bool(a) -> string_of_bool(a);
   | Float(a) -> string_of_float(a);
-  | String(a) -> "\"" ^ a ^ "\"";
-  | Degree(a, b) -> "Deg(" ^ string_of_float(a) ^ ", " ^ string_of_float(b) ^ ")"
-  | Vector(a, b) -> "Vec(" ^ string_of_float(a) ^ ", " ^ string_of_float(b) ^ ")"
+  | String(s) -> s;
+  | Degree(a, b) -> "deg(" ^ (expr a) ^ ", " ^ (expr b) ^ ")"
+  | Vector(a, b) -> "vec(" ^ (expr a) ^ ", " ^ (expr b) ^ ")"
   | Leftvalue(a) -> print_leftvalue a;
   | Binop(op, e1, e2) ->
      "(" ^ (expr e1) ^ " " ^ op ^ " " ^ (expr e2) ^ ")";
@@ -74,7 +72,7 @@ let print_stmt = function
   | Declaration(t, a, e) -> printf "%s" ((print_type t) ^ " " ^ (print_leftvalue a) ^ " = " ^ (expr e));;
 
 let rec print_cout = function
-  | [] -> ""
+  | [] -> "\"\""
   | [e] -> expr e;
   | h :: t -> (expr h) ^ " <<' '<< " ^ (print_cout t);;
               
@@ -89,7 +87,7 @@ let rec print_block_list ind = function
      printf ";\n";
   | [If(a, b)] ->
      print_ind ind "if";
-     printf "%s" (expr a);
+     printf "(%s)" (expr a);
      printf "{\n";
      print_block_list (ind + 1) b;
      print_ind ind "}";

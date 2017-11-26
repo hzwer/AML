@@ -79,16 +79,17 @@ toplevel:
     | IDENTIFIER                         { [$1] }
     | IDENTIFIER COMMA identifier_list   { $1 :: $3 }
     
-  expr:
+  expr:    
     | INT                           { Int($1) }
     | BOOL                          { Bool($1) }
     | STRING                        { String($1) }
     | FLOAT                         { Float($1) }
-    | vec                           { $1 }
     | leftvalue                     { Leftvalue($1) }
     | LPAREN expr RPAREN            { $2 }
     | binary_op                     { $1 }
     | unary_op                      { $1 }
+    | TVECTOR LPAREN expr COMMA expr RPAREN { Vector($3, $5) }
+    | TDEGREE LPAREN expr COMMA expr RPAREN { Degree($3, $5) }
 
   expr_list:
     | { [] }
@@ -125,16 +126,13 @@ toplevel:
     | { [] }
     | stmt block_list                 { $1 :: $2 }
     
-  vec:
-    | LPAREN expr COMMA expr RPAREN { Vec($2, $4) }
-
   builtintype:
     | TINT                          { Builtintype("int") }
     | TDOUBLE                       { Builtintype("double") }
     | TSTRING                       { Builtintype("string") }
     | TBOOL                         { Builtintype("bool") }
-    | TDEGREE                       { Builtintype("Deg") }
-    | TVECTOR                       { Builtintype("Vec") }
+    | TDEGREE                       { Builtintype("deg") }
+    | TVECTOR                       { Builtintype("vec") }
 
   unary_op:
     | NOT expr                      { Unop ("!", $2) }

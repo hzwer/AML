@@ -1,0 +1,14 @@
+func If(){
+     if (2 < 10) {
+          println("Yes");
+     }
+     if (true) {
+         if (false){
+             v=(4 + 1);
+         } else {
+         v = 2;
+     }
+     } else {
+}
+     println(v);
+}

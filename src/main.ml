@@ -116,6 +116,9 @@ let rec print_block_list ind = function
   | [Println(exprs)] ->     
      print_ind ind ("cout << " ^ print_cout exprs ^ " << endl");
      printf ";\n";
+  | [Comment(s)] ->     
+     print_ind ind ("/*" ^ s ^ "*/");
+     printf "\n";
   | h :: t -> print_block_list ind [h];
               print_block_list ind t;;
  

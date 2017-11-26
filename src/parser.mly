@@ -28,7 +28,6 @@
 %token SEQ
 %token SNE
 %token EQUAL
-%token EOL
 %token EOF
 %token COMMA
 %token FUNC

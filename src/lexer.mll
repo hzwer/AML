@@ -5,20 +5,20 @@
 }
 
 let ident = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '0'-'9' '_']*
-
 let int = '-'? ['0'-'9'] ['0'-'9']*
-
 let digit = ['0'-'9']
 let frac = '.' digit*
 let exp = ['e' 'E'] ['-' '+']? digit+
 let float = digit* frac? exp?
+let white = [' ' '\t']+
 let string = ['"'] ['a'-'z' 'A'-'Z' '0'-'9' '_']* ['"']
 let newline = '\r' | '\n' | "\r\n"
               
 rule token =
   parse
-  | [' ' '\t']+    { token lexbuf }
-  | newline        { EOL}
+  | newline        { token lexbuf }
+  | white          { token lexbuf }
+  | "/*"           { read_comment (Buffer.create 128) lexbuf }
   | "agent"        { AGENT }
   | "init"         { INIT }
   | "step"         { STEP }
@@ -62,17 +62,14 @@ rule token =
   | '}'            { RBRACE }
   | ';'            { SEMICOLON }
   | ','            { COMMA }
-  | "//"           { read_line_comment (Buffer.create 128) lexbuf }
   | ident          { IDENTIFIER (Lexing.lexeme lexbuf) }
   | eof            { EOF }
   | _              { raise (SyntaxError (
-                   "Unexpected char: " ^ Lexing.lexeme lexbuf)) }
+                                "Unexpected char: " ^ Lexing.lexeme lexbuf)) }
   
-and read_line_comment buf =
+and read_comment buf =
   parse
-  | newline  { COMMENT (Buffer.contents buf) }
   | eof      { COMMENT (Buffer.contents buf) }
-  | _
-      { Buffer.add_string buf (Lexing.lexeme lexbuf);
-        read_line_comment buf lexbuf
-      }
+  | "*/"     { COMMENT (Buffer.contents buf) }
+  | _        { Buffer.add_string buf (Lexing.lexeme lexbuf);
+               read_comment buf lexbuf }

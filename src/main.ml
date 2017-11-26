@@ -70,7 +70,12 @@ let print_type = function
 let print_stmt = function
   | Assign(a, e) -> printf "%s" ((print_leftvalue a) ^ " = " ^ (expr e));
   | Declaration(t, a, e) -> printf "%s" ((print_type t) ^ " " ^ (print_leftvalue a) ^ " = " ^ (expr e));;
-  
+
+let rec print_cout = function
+  | [] -> ""
+  | [e] -> expr e;
+  | h :: t -> (expr h) ^ " <<' '<< " ^ (print_cout t);;
+              
 let rec print_block_list ind = function
   | [] -> printf("");
   | [Expr(e)] -> print_ind ind (expr e);
@@ -105,7 +110,10 @@ let rec print_block_list ind = function
   | [Call(identifier, identifiers)] ->
      print_ind ind identifier;
      printf "(%s)" (print_idens identifiers);
-     printf ";\n";     
+     printf ";\n";
+  | [Println(exprs)] ->     
+     print_ind ind ("cout << " ^ print_cout exprs ^ " << endl");
+     printf ";\n";
   | h :: t -> print_block_list ind [h];
               print_block_list ind t;;
  

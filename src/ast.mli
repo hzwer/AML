@@ -21,6 +21,8 @@ and expr =
   | Vec of expr * expr
   | Binop of string * expr * expr
 
+and exprs = expr list           
+
 and stmt = 
   | Assign of (leftvalue * expr)
   | Declaration of (builtintype * leftvalue * expr)
@@ -29,6 +31,7 @@ and block =
   | Stmt of stmt
   | Expr of expr
   | Call of (identifier * identifiers)
+  | Println of exprs
   | If of (expr * block_list)
   | IfElse of (expr * block_list * block_list)
   | For of (stmt * expr * stmt * block_list)

@@ -28,8 +28,9 @@ rule token =
   | "bool"         { TBOOL }
   | "deg"          { TDEGREE }
   | "vec"          { TVECTOR }
-  | "true"         { true }
-  | "false"        { false }
+  | "true"         { BOOL (true) }
+  | "false"        { BOOL (false) }
+  | "println"      { PRINTLN }
   | ['\n']         { EOL }
   | int            { INT (int_of_string (Lexing.lexeme lexbuf)) }
   | float          { FLOAT (float_of_string (Lexing.lexeme lexbuf)) }

@@ -6,6 +6,7 @@
 %token <string> STRING
 %token <string> IDENTIFIER
 %token <int> INT
+%token <bool> BOOL
 %token TINT
 %token TDOUBLE
 %token TSTRING
@@ -17,9 +18,8 @@
 %token IF
 %token ELSE
 %token FOR
-%token DEFINT
 %token MOD
-%token DEFVEC2I
+%token PRINTLN
 %token PLUS MINUS TIMES DIV
 %token LPAREN RPAREN
 %token NOT
@@ -76,11 +76,25 @@
     
   identifier_list:
     | { [] }
-    | IDENTIFIER
-      { [$1] }
-    | IDENTIFIER COMMA identifier_list
-      { $1 :: $3 }
+    | IDENTIFIER                         { [$1] }
+    | IDENTIFIER COMMA identifier_list   { $1 :: $3 }
+    
+  expr:
+    | INT                           { Int($1) }
+    | BOOL                          { Bool($1) }
+    | STRING                        { String($1) }
+    | FLOAT                         { Float($1) }
+    | vec                           { $1 }
+    | leftvalue                     { Leftvalue($1) }
+    | LPAREN expr RPAREN            { $2 }
+    | binary_op                     { $1 }
 
+  expr_list:
+    | { [] }
+    | expr                          { [$1] }
+    | expr COMMA expr_list          { $1 :: $3 }
+      
+    
   for_stmt:
     | FOR LPAREN assignment SEMICOLON expr SEMICOLON assignment RPAREN
     LBRACE block_list RBRACE
@@ -88,6 +102,7 @@
 
   call_stmt:
     | IDENTIFIER LPAREN identifier_list RPAREN { Call($1, $3) }
+    | PRINTLN LPAREN expr_list RPAREN { Println($3) }
       
   if_stmt:
     | IF LPAREN expr RPAREN LBRACE block_list RBRACE
@@ -119,15 +134,6 @@
     | TDEGREE                        { Builtintype("Deg") }
     | TVECTOR                        { Builtintype("Vec") }
     
-  expr:
-    | INT                           { Int($1) }
-    | leftvalue                     { Leftvalue($1) }
-    | STRING                        { String($1) }
-    | FLOAT                         { Float($1) }
-    | vec                           { $1 }
-    | LPAREN expr RPAREN            { $2 }
-    | binary_op                     { $1 }
-
   binary_op:
       | expr TIMES expr               { Binop("*", $1, $3) }
       | expr DIV expr                 { Binop("/", $1, $3) }

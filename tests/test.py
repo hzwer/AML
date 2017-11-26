@@ -1,6 +1,6 @@
 import os
 
-tests = ["calc", "loop", "agent", "variable"]
+tests = ["arith", "loop", "agent", "variable"]
 
 for test in tests:
     os.system("./main.native tests/" + test + ".aml" + " > tests/output/" + test + ".cpp")

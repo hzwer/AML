@@ -1,4 +1,4 @@
-{
+{0
   open Parser
 
   exception SyntaxError of string
@@ -19,6 +19,7 @@ rule token =
   | newline        { token lexbuf }
   | white          { token lexbuf }
   | "/*"           { read_comment (Buffer.create 128) lexbuf }
+  | "//"           { read_line_comment (Buffer.create 128) lexbuf }
   | "agent"        { AGENT }
   | "init"         { INIT }
   | "step"         { STEP }
@@ -69,7 +70,14 @@ rule token =
   
 and read_comment buf =
   parse
-  | eof      { COMMENT (Buffer.contents buf) }
   | "*/"     { COMMENT (Buffer.contents buf) }
   | _        { Buffer.add_string buf (Lexing.lexeme lexbuf);
                read_comment buf lexbuf }
+
+and read_line_comment buf =
+  parse
+  | eof      { COMMENT (Buffer.contents buf) }
+  | "//"     { COMMENT (Buffer.contents buf) }
+  | newline  { COMMENT (Buffer.contents buf) }
+  | _        { Buffer.add_string buf (Lexing.lexeme lexbuf);
+               read_line_comment buf lexbuf }

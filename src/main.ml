@@ -87,14 +87,13 @@ let rec print_block_list ind = function
      printf ";\n";
   | [If(a, b)] ->
      print_ind ind "if";
-     printf "(%s)" (expr a);
+     printf "(%s) " (expr a);
      printf "{\n";
      print_block_list (ind + 1) b;
-     print_ind ind "}";
+     print_ind ind "}\n";
   | [IfElse(a, b, c)] ->
      print_block_list ind [If(a, b)];
-     printf "\n";
-     print_ind ind "else{\n";
+     print_ind ind "else {\n";
      print_block_list (ind + 1) c;
      print_ind ind "}\n";
   | [For(a, b, c, d)] ->
@@ -104,7 +103,7 @@ let rec print_block_list ind = function
      printf "%s" (expr b);
      printf "; ";
      print_stmt c;
-     printf "){\n";
+     printf ") {\n";
      print_block_list (ind + 1) d;
      print_ind ind "}\n";
   | [Call(identifier, identifiers)] ->
@@ -150,13 +149,13 @@ let rec print_toplevel = function
   | Agent(init_list, step_list) ->
      printf("Agent{\nInit{\n");
      print_block_list 0 init_list;
-     printf("}\nvoid Step(){\n");
+     printf("}\nvoid Step() {\n");
      print_block_list 0 step_list;
      printf("}\n};\n");
   | Function(identifier, identifiers, block_list) ->
      print_ind 0 "void ";
      printf "%s" identifier;
-     printf "(%s)" (print_idens identifiers);
+     printf "(%s) " (print_idens identifiers);
      printf("{\n");
      print_block_list 1 block_list;
      printf("}\n");;
@@ -194,8 +193,7 @@ let _ =
        printf "/*produced by AML*/\n";
        (*addlib "lib/header.ml";*)
        
-       let lexbuf = read_all file in 
-       let tokens = Lexing.from_string lexbuf in
+       let tokens = Lexing.from_channel (open_in file) in
        let t = Parser.main Lexer.token tokens in 
        print_t(t);
        

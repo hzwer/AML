@@ -32,3 +32,5 @@ example/calc.cpp
 example/variable.cpp
 
 *.out
+
+*.mll#

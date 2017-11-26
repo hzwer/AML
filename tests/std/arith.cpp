@@ -1,5 +1,5 @@
 /*produced by AML*/
-void arith(){
+void arith() {
     cout << false <<' '<< true <<' '<< 42 << endl;
     cout << (1 + ((4 + 6) * 3)) << endl;
     cout << (8 - (3 % 2)) << endl;

@@ -5,4 +5,5 @@ func comment(){
      /* This is comment 2 */
      println(a);
      /* This is comment 3 */
+     /* */
 }

@@ -3,7 +3,7 @@ Agent{
 Init{
 a = 1;
 }
-void Step(){
+void Step() {
 a = 1;
 }
 };

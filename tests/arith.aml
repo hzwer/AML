@@ -9,4 +9,5 @@ int main(){
      println(!true);
      println(!false);
      println(!(2 - 1));
+     return(0);
 }

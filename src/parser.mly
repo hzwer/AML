@@ -23,6 +23,7 @@
 %token FOR
 %token MOD
 %token PRINTLN
+%token RETURN
 %token PLUS MINUS TIMES DIV
 %token LPAREN RPAREN
 %token NOT
@@ -60,7 +61,7 @@
     toplevel_list EOF               { $1 }
 
 toplevel:
-    | builtintype IDENTIFIER LPAREN parameter_list RPAREN
+    | builtintype IDENTIFIER LPAREN expr_list RPAREN
       LBRACE block_list RBRACE      { Function($1, $2, $4, $7) }
     | AGENT LBRACE init step RBRACE { Agent($3, $4) }
     
@@ -74,15 +75,10 @@ toplevel:
   step:
     | STEP LBRACE block_list RBRACE   { $3 }
 
-  parameter:
+  leftvalue:
     | IDENTIFIER                      { Identifier($1) }
-    | builtintype IDENTIFIER          { Parameter($1, $2) }    
+    | builtintype IDENTIFIER          { TypeIdentifier($1, $2) }    
       
-  parameter_list:
-    | { [] }
-    | parameter                         { [$1] }
-    | parameter COMMA parameter_list   { $1 :: $3 }
-    
   expr:    
     | INT                           { Int($1) }
     | BOOL                          { Bool($1) }
@@ -107,7 +103,7 @@ toplevel:
           { For($3, $5, $7, $10) }
 
   call_stmt:
-    | IDENTIFIER LPAREN parameter_list RPAREN { Call($1, $3) }
+    | IDENTIFIER LPAREN expr_list RPAREN { Call($1, $3) }
     | PRINTLN LPAREN expr_list RPAREN { Println($3) }
       
   if_stmt:
@@ -162,8 +158,4 @@ toplevel:
     
   assignment:
     | leftvalue EQUAL expr             { Assign($1, $3) }
-    | builtintype IDENTIFIER           { Assign(Parameter($1, $2), init_val($1))}
-
-  leftvalue:
-    | IDENTIFIER                       { Identifier($1) }
-    | builtintype IDENTIFIER           { Parameter($1, $2) }
+    | builtintype IDENTIFIER           { Assign(TypeIdentifier($1, $2), init_val($1))}

@@ -1,12 +1,12 @@
 type identifier = string
                 
 and ttype = string
-                 
+
+and exprs = expr list
+          
 and leftvalue =
   | Identifier of identifier
-  | Parameter of builtintype * identifier
-
-and parameters = leftvalue list 
+  | TypeIdentifier of builtintype * identifier
                
 and builtintype =
   | Builtintype of ttype
@@ -22,15 +22,13 @@ and expr =
   | Unop of string * expr
   | Binop of string * expr * expr
 
-and exprs = expr list           
-
 and stmt =  
   | Assign of (leftvalue * expr)
             
 and block =
   | Stmt of stmt
   | Expr of expr
-  | Call of (identifier * parameters)
+  | Call of (identifier * exprs)
   | Println of exprs
   | If of (expr * block_list)
   | IfElse of (expr * block_list * block_list)
@@ -42,6 +40,6 @@ and block_list = block list
 
 and toplevel = 
   | Agent of block_list * block_list
-  | Function of (builtintype * identifier * parameters * block_list)
+  | Function of (builtintype * identifier * exprs * block_list)
 
 and t = toplevel list;;

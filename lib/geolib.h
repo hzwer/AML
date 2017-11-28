@@ -34,28 +34,26 @@ public:
 const Float _PI=acos(-1.0);
 class angle{//[-PI,PI]
 public:
-    Float x,y;
+    vec2f p;
     angle(){}
     angle(Float r){
-        x=cos(r);
-        y=sin(r);
+        p=vec2f(cos(r),sin(r));
     }
     angle(Float _x,Float _y){
-        x=_x;
-        y=_y;
+        p=vec2f(_x,_y);
     }
     angle operator + (Float d){
         //cos(a+b)=cos(a)cos(b)-sin(a)sin(b)
         //sin(a+b)=cos(a)sin(b)+sin(a)cos(b)
-        return angle(x*cos(d)-y*sin(d),  x*sin(d)+y*cos(d));
+        return angle(p.x*cos(d)-p.y*sin(d),  p.x*sin(d)+p.y*cos(d));
     }
     angle operator - (Float d){
         //cos(a-b)=cos(a)cos(b)+sin(a)sin(b)
         //sin(a-b)=sin(a)cos(b)-cos(a)sin(b)
-        return angle(x*cos(d)+y*sin(d), -x*sin(d)+y*cos(d));
+        return angle(p.x*cos(d)+p.y*sin(d), -p.x*sin(d)+p.y*cos(d));
     }
     angle operator * (Float d){
-        Float r=atan2(y,x);
+        Float r=atan2(p.y,p.x);
         return angle(r*d);
     }
     angle _approach(const angle &tgt,const angle &lw,const angle &hi){

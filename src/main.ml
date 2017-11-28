@@ -43,58 +43,62 @@ and exprs e =
 let print_type = function 
   | Builtintype(a) -> a;;
   
-let print_stmt = function
-  | Assign(a, e) -> printf "%s" ((print_leftvalue a) ^ " = " ^ (exprs [e]));;
+let print_assign = function
+  | Assign(a, e) -> printf "%s" ((print_leftvalue a) ^ " = " ^ (exprs [e]));
+  | other -> printf "%s" "fault";;
               
-let rec print_block_list ind = function
-  | [] -> printf("");
+let rec print_stmt ind = function
+  | [] -> printf ""
+  | [Empty] -> printf ";\n"
   | [Expr(e)] ->
      print_ind ind (exprs [e]);
      printf ";\n";
-  | [Stmt(Assign(a, e))] ->
+  | [Assign(a, e)] ->
      print_ind ind ((print_leftvalue a) ^ " = " ^ (exprs [e]));
      printf ";\n";     
   | [If(a, b)] ->
      print_ind ind "if";
      printf "(%s) " (exprs [a]);
      printf "{\n";
-     print_block_list (ind + 1) b;
+     print_stmt (ind + 1) [b];
      print_ind ind "}\n";
   | [IfElse(a, b, c)] ->
-     print_block_list ind [If(a, b)];
+     print_stmt ind [If(a, b)];
      print_ind ind "else {\n";
-     print_block_list (ind + 1) c;
+     print_stmt (ind + 1) [c];
      print_ind ind "}\n";
   | [For(a, b, c, d)] ->
      print_ind ind "for(";
-     print_stmt a;
+     print_assign a;
      printf "; ";
      printf "%s" (exprs [b]);
      printf "; ";
-     print_stmt c;
+     print_assign c;
      printf ") {\n";
-     print_block_list (ind + 1) d;
+     print_stmt (ind + 1) [d];
      print_ind ind "}\n";
   | [Comment(s)] ->     
      print_ind ind ("/*" ^ s ^ "*/");
      printf "\n";
-  | h :: t -> print_block_list ind [h];
-              print_block_list ind t;;
+  | [Stmts(x)] -> print_stmt ind x;
+  | h :: t -> print_stmt ind [h];
+              print_stmt ind t;;
  
 let rec print_toplevel = function
   | Agent(init_list, step_list) ->
      printf("Agent{\nInit{\n");
-     print_block_list 0 init_list;
+     print_stmt 0 [init_list];
      printf("}\nvoid Step() {\n");
-     print_block_list 0 step_list;
+     print_stmt 0 [step_list];
      printf("}\n};\n");
-  | Function(Builtintype(t), identifier, identifiers, block_list) ->
+  | Function(Builtintype(t), identifier, identifiers, stmt) ->
      print_ind 0 t;
      printf " %s" identifier;
      printf "(%s) " (exprs identifiers);
      printf("{\n");
-     print_block_list 1 block_list;
-     printf("}\n");;
+     print_stmt 1 [stmt];
+     printf("}\n");
+  | Stmt(x) -> print_stmt 0 [x];;
 
 let rec print_t = function
   | [] -> printf("")

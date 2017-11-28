@@ -3,6 +3,8 @@ type identifier = string
 and ttype = string
 
 and exprs = expr list
+
+and stmts = stmt list          
           
 and leftvalue =
   | Identifier of identifier
@@ -24,22 +26,19 @@ and expr =
   | Call of (identifier * exprs)
   | Println of exprs
 
-and stmt =  
+and stmt =
+  | Stmts of stmts
   | Assign of (leftvalue * expr)
-            
-and block =
-  | Stmt of stmt
   | Expr of expr
-  | If of (expr * block_list)
-  | IfElse of (expr * block_list * block_list)
-  | For of (stmt * expr * stmt * block_list)
+  | If of (expr * stmt)
+  | IfElse of (expr * stmt * stmt)
+  | For of (stmt * expr * stmt * stmt)
   | Comment of string
   | Empty
-            
-and block_list = block list
-
+           
 and toplevel = 
-  | Agent of block_list * block_list
-  | Function of (builtintype * identifier * exprs * block_list)
+  | Agent of stmt * stmt
+  | Stmt of stmt
+  | Function of (builtintype * identifier * exprs * stmt)
 
 and t = toplevel list;;

@@ -5,7 +5,8 @@ int main(){
     } else {
       println("No");
     }    
-     if (2 < 10) {
+     if (2 < 10)
+     {
           println("Yes");
      }
      if (true) {

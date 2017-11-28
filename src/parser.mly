@@ -1,5 +1,4 @@
 %{ open Ast %}
-%{ open Method %}
 %token AGENT
 %token INIT
 %token STEP
@@ -88,6 +87,7 @@ toplevel:
     | LPAREN expr RPAREN            { $2 }
     | binary_op                     { $1 }
     | unary_op                      { $1 }
+    | call_stmt                     { $1 }
     | TVECTOR LPAREN expr COMMA expr RPAREN { Vector($3, $5) }
     | TANGLE LPAREN expr COMMA expr RPAREN { Angle($3, $5) }
 
@@ -115,11 +115,11 @@ toplevel:
          { IfElse($3, $6, $10) }
     
   stmt:
-    | call_stmt SEMICOLON                  { $1 }
     | if_stmt                              { $1 }
     | for_stmt                             { $1 }
     | COMMENT                              { Comment($1) }
     | assignment SEMICOLON                 { Stmt($1) }
+    | expr SEMICOLON                       { Expr($1) }
     
   block_list:
     | { [] }
@@ -154,8 +154,6 @@ toplevel:
     | expr BINAND expr              { Binop("&", $1, $3) }
     | expr BINOR expr               { Binop("|", $1, $3) }
     | expr BINXOR expr              { Binop("^", $1, $3) }
-    
-    
+        
   assignment:
     | leftvalue EQUAL expr             { Assign($1, $3) }
-    | builtintype IDENTIFIER           { Assign(TypeIdentifier($1, $2), init_val($1))}

@@ -21,6 +21,8 @@ and expr =
   | Leftvalue of leftvalue
   | Unop of string * expr
   | Binop of string * expr * expr
+  | Call of (identifier * exprs)
+  | Println of exprs
 
 and stmt =  
   | Assign of (leftvalue * expr)
@@ -28,8 +30,6 @@ and stmt =
 and block =
   | Stmt of stmt
   | Expr of expr
-  | Call of (identifier * exprs)
-  | Println of exprs
   | If of (expr * block_list)
   | IfElse of (expr * block_list * block_list)
   | For of (stmt * expr * stmt * block_list)

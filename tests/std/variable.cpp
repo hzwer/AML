@@ -1,17 +1,17 @@
-/*produced by AML*/
-#include<cmath>
-#include<cstdio>
-#include<cstring>
-#include<iostream>
-#include<algorithm>
+// produced by AML
+#include <cmath>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <algorithm>
 using namespace std;  
 int main() {
-    int i = 0;
-    double f = 0.;
-    string s = "";
-    bool b = false;
-    ang d = fault;
-    vec v = fault;
+    int i;
+    double f;
+    string s;
+    bool b;
+    ang d;
+    vec v;
     i = 1;
     f = 2;
     s = "3";

@@ -1,9 +1,9 @@
-/*produced by AML*/
-#include<cmath>
-#include<cstdio>
-#include<cstring>
-#include<iostream>
-#include<algorithm>
+// produced by AML
+#include <cmath>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <algorithm>
 using namespace std;  
 int main() {
     cout << false <<' '<< true <<' '<< 42 << endl;

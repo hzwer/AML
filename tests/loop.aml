@@ -1,8 +1,10 @@
-void loop(int num){
-    for(int i; i < 2; i = i + 1)
+int main()
+{
+    int sum;
+    for(int i = 1; i <= 100; i = i + 1)
     {
-        int j;
-        println("loop");            
+        sum = sum + i;
     }
-    loop(num);
+    println(sum);
+    return(0);
 }

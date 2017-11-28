@@ -1,6 +1,6 @@
 import os
 
-tests = ["arith", "if", "loop", "agent", "variable", "comment"]
+tests = ["arith", "if", "loop", "agent", "variable", "comment", "function"]
 
 for test in tests:
     print(test + " test")

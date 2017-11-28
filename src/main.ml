@@ -9,45 +9,54 @@ let rec print_ind ind str=
 let rec print_leftvalue = function
   | Identifier(x) -> x;
   | TypeIdentifier(Builtintype(t), x) -> t ^ " " ^ x;;
-  
-let rec expr = function
-  | Int(a) -> string_of_int(a);
-  | Bool(a) -> string_of_bool(a);
-  | Float(a) -> string_of_float(a);
-  | String(s) -> s;
-  | Angle(a, b) -> "ang(" ^ (expr a) ^ ", " ^ (expr b) ^ ")"
-  | Vector(a, b) -> "vec(" ^ (expr a) ^ ", " ^ (expr b) ^ ")"
-  | Leftvalue(a) -> print_leftvalue a;
-  | Binop(op, e1, e2) ->
-     "(" ^ (expr e1) ^ " " ^ op ^ " " ^ (expr e2) ^ ")";
-  | Unop(op, e) ->
-     op ^ (expr e);;
-  
-let rec exprs = function
-  | [] -> ""
-  | [x] -> expr x;
-  | h :: t -> (expr h) ^ (exprs t);;
 
+let rec print_cout e =
+  match e with
+   | [] -> "\"\""
+   | [x] -> exprs [x]
+   | h :: t -> (exprs [h]) ^ " <<' '<< " ^ (print_cout t)
+             
+and exprs e =
+  match e with
+  | [] -> ""
+  | [Int(a)] -> string_of_int(a)
+  | [Bool(a)] -> string_of_bool(a)
+  | [Float(a)] -> string_of_float(a)
+  | [String(s)] -> s
+  | [Angle(a, b)] -> "ang(" ^ (exprs [a]) ^ ", " ^ (exprs [b]) ^ ")"
+  | [Vector(a, b)] -> "vec(" ^ (exprs [a]) ^ ", " ^ (exprs [b]) ^ ")"
+  | [Leftvalue(a)] -> print_leftvalue a
+  | [Binop(op, e1, e2)] ->
+     "(" ^ (exprs [e1]) ^ " " ^ op ^ " " ^ (exprs [e2]) ^ ")"
+  | [Unop(op, e)] ->
+     op ^ (exprs [e])
+  | [Call(identifier, identifiers)] ->
+     identifier ^
+       (
+         if (identifier = "return") then (" " ^ (exprs identifiers))
+         else ("(" ^ (exprs identifiers) ^ ")")
+       )
+  | [Println(exprs)] ->
+     "cout << " ^ print_cout exprs ^ " << endl";
+  | h :: t -> (exprs [h]) ^ (exprs t);;
+  
 let print_type = function 
   | Builtintype(a) -> a;;
   
 let print_stmt = function
-  | Assign(a, e) -> printf "%s" ((print_leftvalue a) ^ " = " ^ (expr e));;
-
-let rec print_cout = function
-  | [] -> "\"\""
-  | [e] -> expr e;
-  | h :: t -> (expr h) ^ " <<' '<< " ^ (print_cout t);;
+  | Assign(a, e) -> printf "%s" ((print_leftvalue a) ^ " = " ^ (exprs [e]));;
               
 let rec print_block_list ind = function
   | [] -> printf("");
-  | [Expr(e)] -> print_ind ind (expr e);
+  | [Expr(e)] ->
+     print_ind ind (exprs [e]);
+     printf ";\n";
   | [Stmt(Assign(a, e))] ->
-     print_ind ind ((print_leftvalue a) ^ " = " ^ (expr e));
+     print_ind ind ((print_leftvalue a) ^ " = " ^ (exprs [e]));
      printf ";\n";     
   | [If(a, b)] ->
      print_ind ind "if";
-     printf "(%s) " (expr a);
+     printf "(%s) " (exprs [a]);
      printf "{\n";
      print_block_list (ind + 1) b;
      print_ind ind "}\n";
@@ -60,20 +69,12 @@ let rec print_block_list ind = function
      print_ind ind "for(";
      print_stmt a;
      printf "; ";
-     printf "%s" (expr b);
+     printf "%s" (exprs [b]);
      printf "; ";
      print_stmt c;
      printf ") {\n";
      print_block_list (ind + 1) d;
      print_ind ind "}\n";
-  | [Call(identifier, identifiers)] ->
-     print_ind ind identifier;
-     if (identifier = "return") then (printf " %s" (exprs identifiers))
-     else (printf "(%s)" (exprs identifiers));
-     printf ";\n";
-  | [Println(expr)] ->     
-     print_ind ind ("cout << " ^ print_cout expr ^ " << endl");
-     printf ";\n";
   | [Comment(s)] ->     
      print_ind ind ("/*" ^ s ^ "*/");
      printf "\n";
@@ -124,8 +125,6 @@ let read_all file =
 let _ =
   if Array.length Sys.argv = 1 then printf "Expect ./main.native [file]\n"
   else let file = Sys.argv.(1) in
-  
-       printf "/*produced by AML*/\n";
        addlib "lib/header.ml";
        
        let tokens = Lexing.from_channel (open_in file) in

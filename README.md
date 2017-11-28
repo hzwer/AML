@@ -2,9 +2,15 @@
 
 Agent Manipulation Language (AML) is a simple programming languages that compiles to C. It support describing the behaviors of agents and the computation geometry.
 
-## How to get it
+AML is implemented in OCaml.There are some slides made by myself.
 
-AML is implemented in OCaml
+[Introduction to Ocaml](https://drive.google.com/file/d/1EE53Btye7TAuW0bBTSjNVrvH-40I1ifR/view?usp=sharing)
+
+[Introduction to AML](https://drive.google.com/file/d/1BtA4K1q3Tp2fpJ_MfmQF-BdTkDTEem14/view?usp=sharing)
+
+Now it looks like an unfinished course homework, welcome to help us to make it better.
+
+## How to get it
 
 ## Build from source
 
@@ -12,6 +18,10 @@ AML is implemented in OCaml
 2. clone with git
 3. make
 4. ./main.native [file]
+
+## Test
+
+make test
 
 ## Syntax
 
@@ -62,10 +72,26 @@ if (a > 2) {
 
 ```
 int fibonacci(int num) {
-  if (num == 0 || num == 1) {
-    return 0;
+  if (num == 0) {
+    return(0);
+  } else if(num == 1){
+    return(1);
   } else {
     return (fibonacci(num - 2) + fibonacci(num - 1));
   }
 }
 ```
+## Contributors
+* [hzwer](https://github.com/hzwer)
+
+* [wmdcstdio](https://github.com/wmdcstdio)
+
+## Reference
+
+[Batsh](https://github.com/BYVoid/Batsh)
+
+[ocamllex, ocamlyacc](http://caml.inria.fr/pub/docs/manual-ocaml/lexyacc.html)
+
+[An Introduction to Objective Caml](http://www1.cs.columbia.edu/~sedwards/classes/2014/w4115-fall/ocaml.pdf)
+
+[One-Day Compilers](http://venge.net/graydon/talks/mkc/html/index.html)

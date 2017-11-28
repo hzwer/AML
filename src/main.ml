@@ -43,13 +43,11 @@ let rec print_ind ind str=
   if (ind > 0) then (printf("    "); print_ind (ind - 1) str)
   else printf "%s" str;;
      
-let rec print_idens = function
+let rec print_parameters = function
   | [] -> "";
-  | [x] -> x;
-  | h :: t -> h ^ ", " ^ (print_idens t);;
-
-let rec print_leftvalue = function
-  | Identifier(a) -> print_idens [a];;
+  | [Identifier(x)] -> x;
+  | [Parameter(Builtintype(t), x)] -> t ^ " " ^ x;
+  | h :: t -> (print_parameters [h]) ^ ", " ^ (print_parameters t);;
   
 let rec expr = function
   | Int(a) -> string_of_int(a);
@@ -58,7 +56,7 @@ let rec expr = function
   | String(s) -> s;
   | Degree(a, b) -> "deg(" ^ (expr a) ^ ", " ^ (expr b) ^ ")"
   | Vector(a, b) -> "vec(" ^ (expr a) ^ ", " ^ (expr b) ^ ")"
-  | Leftvalue(a) -> print_leftvalue a;
+  | Leftvalue(a) -> print_parameters [a];
   | Binop(op, e1, e2) ->
      "(" ^ (expr e1) ^ " " ^ op ^ " " ^ (expr e2) ^ ")";
   | Unop(op, e) ->
@@ -68,8 +66,7 @@ let print_type = function
   | Builtintype(a) -> a;;
   
 let print_stmt = function
-  | Assign(a, e) -> printf "%s" ((print_leftvalue a) ^ " = " ^ (expr e));
-  | Declaration(t, a, e) -> printf "%s" ((print_type t) ^ " " ^ (print_leftvalue a) ^ " = " ^ (expr e));;
+  | Assign(a, e) -> printf "%s" ((print_parameters [a]) ^ " = " ^ (expr e));;
 
 let rec print_cout = function
   | [] -> "\"\""
@@ -80,11 +77,8 @@ let rec print_block_list ind = function
   | [] -> printf("");
   | [Expr(e)] -> print_ind ind (expr e);
   | [Stmt(Assign(a, e))] ->
-     print_ind ind ((print_leftvalue a) ^ " = " ^ (expr e));
+     print_ind ind ((print_parameters [a]) ^ " = " ^ (expr e));
      printf ";\n";     
-  | [Stmt(Declaration(t, a, e))] ->
-     print_ind ind ((print_type t) ^ " " ^ (print_leftvalue a) ^ " = " ^ (expr e));
-     printf ";\n";
   | [If(a, b)] ->
      print_ind ind "if";
      printf "(%s) " (expr a);
@@ -108,7 +102,7 @@ let rec print_block_list ind = function
      print_ind ind "}\n";
   | [Call(identifier, identifiers)] ->
      print_ind ind identifier;
-     printf "(%s)" (print_idens identifiers);
+     printf "(%s)" (print_parameters identifiers);
      printf ";\n";
   | [Println(exprs)] ->     
      print_ind ind ("cout << " ^ print_cout exprs ^ " << endl");
@@ -155,7 +149,7 @@ let rec print_toplevel = function
   | Function(identifier, identifiers, block_list) ->
      print_ind 0 "void ";
      printf "%s" identifier;
-     printf "(%s) " (print_idens identifiers);
+     printf "(%s) " (print_parameters identifiers);
      printf("{\n");
      print_block_list 1 block_list;
      printf("}\n");;

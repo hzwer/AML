@@ -60,7 +60,7 @@
     toplevel_list EOF               { $1 }
 
 toplevel:
-    | FUNC IDENTIFIER LPAREN identifier_list RPAREN
+    | FUNC IDENTIFIER LPAREN parameter_list RPAREN
       LBRACE block_list RBRACE      { Function($2, $4, $7) }
     | AGENT LBRACE init step RBRACE { Agent($3, $4) }
     
@@ -73,11 +73,15 @@ toplevel:
   
   step:
     | STEP LBRACE block_list RBRACE   { $3 }
-    
-  identifier_list:
+
+  parameter:
+    | IDENTIFIER                      { Identifier($1) }
+    | builtintype IDENTIFIER          { Parameter($1, $2) }    
+      
+  parameter_list:
     | { [] }
-    | IDENTIFIER                         { [$1] }
-    | IDENTIFIER COMMA identifier_list   { $1 :: $3 }
+    | parameter                         { [$1] }
+    | parameter COMMA parameter_list   { $1 :: $3 }
     
   expr:    
     | INT                           { Int($1) }
@@ -103,7 +107,7 @@ toplevel:
           { For($3, $5, $7, $10) }
 
   call_stmt:
-    | IDENTIFIER LPAREN identifier_list RPAREN { Call($1, $3) }
+    | IDENTIFIER LPAREN parameter_list RPAREN { Call($1, $3) }
     | PRINTLN LPAREN expr_list RPAREN { Println($3) }
       
   if_stmt:
@@ -120,7 +124,6 @@ toplevel:
     | for_stmt                             { $1 }
     | COMMENT                              { Comment($1) }
     | assignment SEMICOLON                 { Stmt($1) }
-    | declaration SEMICOLON                { Stmt($1) }
     
   block_list:
     | { [] }
@@ -155,12 +158,11 @@ toplevel:
     | expr BINOR expr               { Binop("|", $1, $3) }
     | expr BINXOR expr              { Binop("^", $1, $3) }
     
-  declaration:
-    | builtintype leftvalue EQUAL expr         { Declaration($1, $2, $4) }
-    | builtintype leftvalue                    { Declaration($1, $2, init_val($1)) }
     
   assignment:
-      | leftvalue EQUAL expr             { Assign($1, $3) }    
+    | leftvalue EQUAL expr             { Assign($1, $3) }
+    | builtintype IDENTIFIER           { Assign(Parameter($1, $2), init_val($1))}
 
   leftvalue:
-      | IDENTIFIER                       { Identifier($1) }
+    | IDENTIFIER                       { Identifier($1) }
+    | builtintype IDENTIFIER           { Parameter($1, $2) }

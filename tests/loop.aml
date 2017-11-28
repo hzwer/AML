@@ -1,7 +1,8 @@
-func loop(){
-     int i;
-     for(i = 0; i < 5; i = i + 1)
-     {
-
-     }
+func loop(int num){
+    for(int i; i < 2; i = i + 1)
+    {
+        int j;
+        println("loop");            
+    }
+    loop(num);
 }

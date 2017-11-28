@@ -1,4 +1,4 @@
-func loop(int num){
+void loop(int num){
     for(int i; i < 2; i = i + 1)
     {
         int j;

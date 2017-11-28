@@ -1,4 +1,4 @@
-func If(){
+int main(){
      if (2 < 10) {
           println("Yes");
      }

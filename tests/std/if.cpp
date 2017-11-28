@@ -1,5 +1,11 @@
 /*produced by AML*/
-void If() {
+#include<cmath>
+#include<cstdio>
+#include<cstring>
+#include<iostream>
+#include<algorithm>
+using namespace std;  
+int main() {
     if((2 < 10)) {
         cout << "Yes" << endl;
     }

@@ -1,5 +1,11 @@
 /*produced by AML*/
-void variable_init() {
+#include<cmath>
+#include<cstdio>
+#include<cstring>
+#include<iostream>
+#include<algorithm>
+using namespace std;  
+int main() {
     int i = 0;
     double f = 0.;
     string s = "";

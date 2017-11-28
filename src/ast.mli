@@ -42,6 +42,6 @@ and block_list = block list
 
 and toplevel = 
   | Agent of block_list * block_list
-  | Function of (identifier * parameters * block_list)
+  | Function of (builtintype * identifier * parameters * block_list)
 
 and t = toplevel list;;

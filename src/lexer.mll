@@ -1,4 +1,4 @@
-{0
+{
   open Parser
 
   exception SyntaxError of string
@@ -23,7 +23,6 @@ rule token =
   | "agent"        { AGENT }
   | "init"         { INIT }
   | "step"         { STEP }
-  | "func"         { FUNC }
   | "if"           { IF }
   | "else"         { ELSE }
   | "for"          { FOR }
@@ -33,6 +32,7 @@ rule token =
   | "bool"         { TBOOL }
   | "ang"          { TANGLE }
   | "vec"          { TVECTOR }
+  | "void"         { VOID }
   | "true"         { BOOL (true) }
   | "false"        { BOOL (false) }
   | "println"      { PRINTLN }

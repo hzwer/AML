@@ -15,6 +15,7 @@
 %token TBOOL
 %token TANGLE
 %token TVECTOR
+%token VOID
 %token true
 %token false
 %token IF
@@ -30,7 +31,6 @@
 %token EQUAL
 %token EOF
 %token COMMA
-%token FUNC
 %token SEMICOLON
 %token LBRACE RBRACE
 %token AND
@@ -60,8 +60,8 @@
     toplevel_list EOF               { $1 }
 
 toplevel:
-    | FUNC IDENTIFIER LPAREN parameter_list RPAREN
-      LBRACE block_list RBRACE      { Function($2, $4, $7) }
+    | builtintype IDENTIFIER LPAREN parameter_list RPAREN
+      LBRACE block_list RBRACE      { Function($1, $2, $4, $7) }
     | AGENT LBRACE init step RBRACE { Agent($3, $4) }
     
   toplevel_list:
@@ -136,6 +136,7 @@ toplevel:
     | TBOOL                         { Builtintype("bool") }
     | TANGLE                        { Builtintype("ang") }
     | TVECTOR                       { Builtintype("vec") }
+    | VOID                          { Builtintype("void") }
 
   unary_op:
     | NOT expr                      { Unop ("!", $2) }

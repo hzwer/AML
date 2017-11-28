@@ -146,9 +146,9 @@ let rec print_toplevel = function
      printf("}\nvoid Step() {\n");
      print_block_list 0 step_list;
      printf("}\n};\n");
-  | Function(identifier, identifiers, block_list) ->
-     print_ind 0 "void ";
-     printf "%s" identifier;
+  | Function(Builtintype(t), identifier, identifiers, block_list) ->
+     print_ind 0 t;
+     printf " %s" identifier;
      printf "(%s) " (print_parameters identifiers);
      printf("{\n");
      print_block_list 1 block_list;
@@ -185,7 +185,7 @@ let _ =
   else let file = Sys.argv.(1) in
   
        printf "/*produced by AML*/\n";
-       (*addlib "lib/header.ml";*)
+       addlib "lib/header.ml";
        
        let tokens = Lexing.from_channel (open_in file) in
        let t = Parser.main Lexer.token tokens in 

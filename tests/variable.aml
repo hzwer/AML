@@ -1,4 +1,4 @@
-func variable_init(){
+int main(){
      int i;
      double f;
      string s;

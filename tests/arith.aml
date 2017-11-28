@@ -1,4 +1,4 @@
-func arith(){
+int main(){
      println(false, true, 42);     
      println(1 + (4 + 6) * 3);
      println(8 - 3 % 2);

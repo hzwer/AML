@@ -1,5 +1,11 @@
 /*produced by AML*/
-void arith() {
+#include<cmath>
+#include<cstdio>
+#include<cstring>
+#include<iostream>
+#include<algorithm>
+using namespace std;  
+int main() {
     cout << false <<' '<< true <<' '<< 42 << endl;
     cout << (1 + ((4 + 6) * 3)) << endl;
     cout << (8 - (3 % 2)) << endl;

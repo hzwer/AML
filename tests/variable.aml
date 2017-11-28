@@ -3,12 +3,12 @@ func variable_init(){
      double f;
      string s;
      bool b;
-     deg d;
+     ang d;
      vec v;
      i = 1;
      f = 2;
      s = "3";
      s = "";
      b = true;
-     d = deg(3.0, 2.0);
+     d = ang(3.0, 2.0);
 }

@@ -31,7 +31,7 @@ rule token =
   | "double"       { TDOUBLE }
   | "string"       { TSTRING }
   | "bool"         { TBOOL }
-  | "deg"          { TDEGREE }
+  | "ang"          { TANGLE }
   | "vec"          { TVECTOR }
   | "true"         { BOOL (true) }
   | "false"        { BOOL (false) }

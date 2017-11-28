@@ -34,3 +34,5 @@ example/variable.cpp
 *.out
 
 *.mll#
+
+*.aml#

@@ -4,12 +4,12 @@ void variable_init() {
     double f = 0.;
     string s = "";
     bool b = false;
-    deg d = fault;
+    ang d = fault;
     vec v = fault;
     i = 1;
     f = 2;
     s = "3";
     s = "";
     b = true;
-    d = deg(3., 2.);
+    d = ang(3., 2.);
 }

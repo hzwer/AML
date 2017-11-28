@@ -13,7 +13,7 @@
 %token TDOUBLE
 %token TSTRING
 %token TBOOL
-%token TDEGREE
+%token TANGLE
 %token TVECTOR
 %token true
 %token false
@@ -93,7 +93,7 @@ toplevel:
     | binary_op                     { $1 }
     | unary_op                      { $1 }
     | TVECTOR LPAREN expr COMMA expr RPAREN { Vector($3, $5) }
-    | TDEGREE LPAREN expr COMMA expr RPAREN { Degree($3, $5) }
+    | TANGLE LPAREN expr COMMA expr RPAREN { Angle($3, $5) }
 
   expr_list:
     | { [] }
@@ -134,7 +134,7 @@ toplevel:
     | TDOUBLE                       { Builtintype("double") }
     | TSTRING                       { Builtintype("string") }
     | TBOOL                         { Builtintype("bool") }
-    | TDEGREE                       { Builtintype("deg") }
+    | TANGLE                        { Builtintype("ang") }
     | TVECTOR                       { Builtintype("vec") }
 
   unary_op:

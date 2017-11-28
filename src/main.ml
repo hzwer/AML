@@ -54,7 +54,7 @@ let rec expr = function
   | Bool(a) -> string_of_bool(a);
   | Float(a) -> string_of_float(a);
   | String(s) -> s;
-  | Degree(a, b) -> "deg(" ^ (expr a) ^ ", " ^ (expr b) ^ ")"
+  | Angle(a, b) -> "ang(" ^ (expr a) ^ ", " ^ (expr b) ^ ")"
   | Vector(a, b) -> "vec(" ^ (expr a) ^ ", " ^ (expr b) ^ ")"
   | Leftvalue(a) -> print_parameters [a];
   | Binop(op, e1, e2) ->

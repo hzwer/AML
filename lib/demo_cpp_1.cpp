@@ -39,7 +39,8 @@ public:
 class _Ball: public _Agent{
 public:
     vec2f pos;
-    vec2f _d_pos;
+    vec2f _d_pos;//detect reference of "'pos", automatically create it
+    vec2f vel;
     void _init(void){
         pos=vec2f(0,10);
     }
@@ -50,7 +51,7 @@ public:
         //glVertex2f(-1,-1);
         //glVertex2f(1,1);
         _AML_Vertex2f(pos);
-        vec2f nxt=pos+_d_pos*0.1/_dt;
+        vec2f nxt=pos+vel*0.1/_dt;
         _AML_Vertex2f(nxt);
         glEnd();
         glFlush();
@@ -63,7 +64,8 @@ public:
     void _step(double _tim, double _dt, _Agent* _last_Agent){//_tim is counted by seconds
         _Ball* _last = (_Ball*)_last_Agent;
         pos = vec2f(0.0, 10 - _tim * _tim * 4.9);//free fall
-        _d_pos = pos - (_last->pos);
+         _d_pos = pos - (_last->pos);
+         vel = _d_pos;
     }
     void _copy_from(_Agent *_from_Agent){
         _Ball* _from = (_Ball*)_from_Agent;
@@ -81,7 +83,6 @@ void _Plot(void){
     glutSwapBuffers();
 }
 void _Step_Time(int _time_value){
-    printf("_ct=%lf,_cur_tim=%lf\n",_dt,_cur_tim);
     //printf("step time: %d\n",_time_value);
     for(int i=0;i<_agents.size();i++){
         _agents[i].second->_step(_cur_tim,_dt,_agents[i].first);

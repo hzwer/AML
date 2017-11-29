@@ -16,7 +16,7 @@ Now it looks like an unfinished course homework, welcome to help us to make it b
 
 1. sudo apt install mesa-utils
 2. sudo apt-get install freeglut3-dev
-3. opam install ocamlfind
+3. opam install menhir
 4. clone with git
 5. make
 6. ./main.native [file]

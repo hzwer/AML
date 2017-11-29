@@ -1,9 +1,10 @@
 // produced by AML
+#include "geolib.h"
 #include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
-#include <algorithm>
+#include <algorithm>  
 using namespace std;  
 int main() {
     int a = 3;
@@ -12,6 +13,14 @@ int main() {
     }
     else {
         cout << "No" << endl;
+    }
+    if((a >= 3)) {
+        if((a <= 3)) {
+            printfln("Yes");
+        }
+        else {
+            printfln("No");
+        }
     }
     if((2 < 10)) {
         cout << "Yes" << endl;
@@ -27,4 +36,5 @@ int main() {
     else {
     }
     cout << v << endl;
+    return 0;
 }

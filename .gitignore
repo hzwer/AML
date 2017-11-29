@@ -37,3 +37,7 @@ example/variable.cpp
 *.mll#
 
 *.aml#
+
+*.h~
+
+*.cpp~

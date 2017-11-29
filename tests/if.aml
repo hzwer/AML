@@ -1,10 +1,13 @@
 int main(){
     int a = 3;
-    if (a > 2) {
+    if (a > 2)
       println("Yes");
-    } else {
+    else
       println("No");
-    }    
+    if(a >= 3)
+        if(a <= 3)
+            printfln("Yes");
+        else printfln("No");
      if (2 < 10)
      {
           println("Yes");
@@ -18,4 +21,5 @@ int main(){
      } else {
 }
      println(v);
+     return(0);
 }

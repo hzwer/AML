@@ -47,8 +47,10 @@
 %left BINAND BINXOR BINOR
 %nonassoc SEQ SNE
 %nonassoc GT LT GE LE
+%nonassoc NOT
 %left PLUS MINUS
 %left DIV TIMES MOD
+
 %nonassoc IF
 %nonassoc ELSE
 
@@ -107,12 +109,12 @@
     | PRINTLN LPAREN expr_list RPAREN { Println($3) }
       
   if_stmt:
-    | IF LPAREN expr RPAREN LBRACE stmt RBRACE
-         { If($3, $6) }
-    | IF LPAREN expr RPAREN
-         LBRACE stmt RBRACE
+    | IF LPAREN expr RPAREN stmt
+      %prec IF;
+         { If($3, $5) }
+    | IF LPAREN expr RPAREN stmt
          ELSE stmt
-         { IfElse($3, $6, $9) }
+         { IfElse($3, $5, $7) }
     
   stmt:
     | SEMICOLON                            { Empty }

@@ -3,6 +3,7 @@
 #include<algorithm>
 #include<cstring>
 #include<cmath>
+#include<cassert>
 using namespace std;
 typedef double Float;
 class vec2f{
@@ -57,6 +58,40 @@ public:
         return angle(r*d);
     }
     angle _approach(const angle &tgt,const angle &lw,const angle &hi){
+        assert(p._crossprd(lw) * p._crossprd(hi) <= 0.0);
         //instead of approaching this angle to tgt, "approach" tgt to this angle
+        vec2f ret1,ret2;//ret1: countercloskwise, ret2: clockwise
+        if(p._crossprd(tgt)>=0){
+            if(p._crossprd(lw)>=0&&lw._crossprd(tgt)>=0){
+                ret1=lw;
+                ret2=hi;
+            }
+            else if(p._crossprd(hi)>=0&&hi._crossprd(tgt)>=0){
+                ret1=hi;
+                ret2=lw;
+            }
+            else{
+                return tgt;
+            }
+        }
+        else{
+            if(p._crossprd(lw)<=0&&lw._crossprd(tgt)<=0){
+                ret1=lw;
+                ret2=hi;
+            }
+            else if(p._crossprd(hi)<=0&&hi._crossprd(tgt)<=0){
+                ret1=hi;
+                ret2=lw;
+            }
+            else{
+                return tgt;
+            }
+        }
+        if(fabs(ret1._crossprd(tgt))<=fabs(ret2._crossprd(tgt))){
+            return ret1;
+        }
+        else{
+            return ret2;
+        }
     }
 };

@@ -1,3 +1,5 @@
+#ifndef _GEOLIB_H
+#define _GEOLIB_H
 #include<iostream>
 #include<cstdio>
 #include<algorithm>
@@ -103,3 +105,4 @@ public:
         }
     }
 };
+#endif

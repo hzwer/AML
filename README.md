@@ -25,6 +25,11 @@ Now it looks like an unfinished course homework, welcome to help us to make it b
 
 make test
 
+## Test things with openGL:
+cd lib
+g++ -o main demo_cpp_1.cpp -lglut -lGL
+./main
+
 ## Syntax
 
 ### Assignment

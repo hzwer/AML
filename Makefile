@@ -7,7 +7,7 @@
 # - _tags file introduces packages, bin_annot flag for tool chain
 # - using *.mll and *.mly are handled automatically
 
-OCB_FLAGS = -use-ocamlfind -I src -I lib # uses ocamlyacc
+OCB_FLAGS = -use-ocamlfind -use-menhir -I src -I lib # uses menhir
 .PHONY: all clean byte native profile debug sanity test
 
 OCB = ocamlbuild $(OCB_FLAGS)

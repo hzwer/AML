@@ -24,7 +24,7 @@ and exprs e =
   | [Float(a)] -> string_of_float(a)
   | [String(s)] -> s
   | [Angle(a, b)] -> "ang(" ^ (exprs [a]) ^ ", " ^ (exprs [b]) ^ ")"
-  | [Vector(a, b)] -> "vec(" ^ (exprs [a]) ^ ", " ^ (exprs [b]) ^ ")"
+  | [Vector(a, b)] -> "vec2f(" ^ (exprs [a]) ^ ", " ^ (exprs [b]) ^ ")"
   | [Leftvalue(a)] -> print_leftvalue a
   | [Binop(op, e1, e2)] ->
      "(" ^ (exprs [e1]) ^ " " ^ op ^ " " ^ (exprs [e2]) ^ ")"

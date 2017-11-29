@@ -15,14 +15,11 @@
 %token TANGLE
 %token TVECTOR
 %token VOID
-%token true
-%token false
 %token IF
 %token ELSE
 %token FOR
 %token MOD
 %token PRINTLN
-%token RETURN
 %token PLUS MINUS TIMES DIV
 %token LPAREN RPAREN
 %token NOT
@@ -135,7 +132,7 @@
     | TSTRING                       { Builtintype("string") }
     | TBOOL                         { Builtintype("bool") }
     | TANGLE                        { Builtintype("ang") }
-    | TVECTOR                       { Builtintype("vec") }
+    | TVECTOR                       { Builtintype("vec2f") }
     | VOID                          { Builtintype("void") }
 
   unary_op:

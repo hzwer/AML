@@ -3,9 +3,12 @@ int main(){
      println(vec(0, 0) + vec(1, 1));
      vec a = vec(3, 5);
      vec b = vec(1, 5);
+     double d = 2.1;     
      println(a + b);
      println(a - b);
      println(a * b);
      println(a / b);
+     println(a * d);
+     println(a / d);
      return(0);
 }

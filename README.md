@@ -14,10 +14,12 @@ Now it looks like an unfinished course homework, welcome to help us to make it b
 
 ## Build from source
 
-1. opam install ocamlfind
-2. clone with git
-3. make
-4. ./main.native [file]
+1. sudo apt install mesa-utils
+2. sudo apt-get install freeglut3-dev
+3. opam install ocamlfind
+4. clone with git
+5. make
+6. ./main.native [file]
 
 ## Test
 

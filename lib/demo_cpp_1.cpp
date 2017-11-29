@@ -31,7 +31,6 @@ void _AML_Vertex2f(vec2f pos){
 
 class _Agent{
 public:
-    virtual void _init()=0;
     virtual void _plot(double,double)=0;
     virtual void _step(double,double,_Agent*)=0;
     virtual void _copy_from(_Agent*)=0;
@@ -41,7 +40,7 @@ public:
     vec2f pos;
     vec2f _d_pos;//detect reference of "'pos", automatically create it
     vec2f vel;
-    void _init(void){
+    _Ball(void){
         pos=vec2f(0,10);
     }
     void _plot(double _tim, double _dt){

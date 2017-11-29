@@ -1,7 +1,7 @@
 Agent Ball{
     vec2f pos;
     vec2f vel;
-    void init(void){
+    Ball(void){
         pos=vec2f(0,10);
     }
     void plot(Float t, Float dt){

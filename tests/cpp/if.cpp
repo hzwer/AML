@@ -13,6 +13,14 @@ int main() {
     else {
         cout << "No" << endl;
     }
+    if((a >= 3)) {
+        if((a <= 3)) {
+            printfln("Yes");
+        }
+        else {
+            printfln("No");
+        }
+    }
     if((2 < 10)) {
         cout << "Yes" << endl;
     }
@@ -27,4 +35,5 @@ int main() {
     else {
     }
     cout << v << endl;
+    return 0;
 }

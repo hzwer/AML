@@ -19,7 +19,7 @@ Agent Ball{
     }
     void step(Float t,Float dt){
         pos = vec2f(0.0,10-tim*tim*4.9);
-        vel = 'pos;
+        vel = ''pos;
     }
 };
 

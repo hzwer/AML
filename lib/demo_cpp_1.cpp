@@ -39,6 +39,7 @@ class _Ball: public _Agent{
 public:
     vec2f pos;
     vec2f _d_pos;//detect reference of "'pos", automatically create it
+    vec2f _d_d_pos;
     vec2f vel;
     _Ball(void){
         pos=vec2f(0,10);
@@ -64,6 +65,7 @@ public:
         _Ball* _last = (_Ball*)_last_Agent;
         pos = vec2f(0.0, 10 - _tim * _tim * 4.9);//free fall
          _d_pos = pos - (_last->pos);
+         _d_d_pos = _d_pos - (_last->_d_pos);
          vel = _d_pos;
     }
     void _copy_from(_Agent *_from_Agent){

@@ -14,12 +14,11 @@ Now it looks like an unfinished course homework, welcome to help us to make it b
 
 ## Build from source
 
-1. sudo apt install mesa-utils
-2. sudo apt-get install freeglut3-dev
-3. opam install menhir
-4. clone with git
-5. make
-6. ./main.native [file]
+1. install glut // for mac, Xcode bring the glut 
+2. opam install menhir
+3. clone with git
+4. make
+5. ./main.native [file]
 
 ## Test
 
@@ -27,7 +26,11 @@ make test
 
 ## Test things with openGL:
 cd lib
-g++ -o main demo_cpp_1.cpp -lglut -lGL
+
+g++ -o main demo_cpp_1.cpp -lglut -lGL // for ubuntu
+
+g++ -framework OpenGL -framework GLUT -framework Foundation -o main demo_cpp_1.cpp // for mac OS
+
 ./main
 
 ## Syntax

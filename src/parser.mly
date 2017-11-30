@@ -89,8 +89,8 @@
     
   for_stmt:
     | FOR LPAREN assignment SEMICOLON expr SEMICOLON assignment RPAREN
-    LBRACE stmt RBRACE
-          { For($3, $5, $7, $10) }
+    stmt
+          { For($3, $5, $7, $9) }
 
   call_stmt:
     | IDENTIFIER LPAREN expr_list RPAREN { Call($1, $3) }
@@ -111,7 +111,8 @@
     | COMMENT                              { Comment($1) }
     | assignment SEMICOLON                 { $1 }
     | expr SEMICOLON                       { Expr($1) }
-    | builtintype IDENTIFIER LPAREN expr_list RPAREN stmt      { Function($1, $2, $4, $6) }
+    | builtintype IDENTIFIER LPAREN expr_list RPAREN LBRACE stmt_list RBRACE      { Function($1, $2, $4, Stmts($7)) }
+    | IDENTIFIER LPAREN expr_list RPAREN LBRACE stmt_list RBRACE      { Function(Builtintype(""), $1, $3, Stmts($6)) }
     | LBRACE stmt_list RBRACE              { Stmts($2) }
     
   stmt_list:

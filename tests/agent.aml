@@ -1,10 +1,10 @@
 Agent Ball{
     vec2f pos;
     vec2f vel;
-    int Ball(){
+    _Ball(){
         pos = vec2f(0,10);
     }
-    int plot(double t, double dt){
+    void _plot(double t, double dt){
         glColor3f(1.0,1.0,1.0);
         glBegin(GL_LINES);
         plotvec2f(pos); 

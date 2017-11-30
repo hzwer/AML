@@ -38,7 +38,7 @@ and exprs e =
        )
   | [Println(exprs)] ->
      "cout << " ^ print_cout exprs ^ " << endl";
-  | h :: t -> (exprs [h]) ^ (exprs t);;
+  | h :: t -> (exprs [h]) ^ ", " ^ (exprs t);;
   
 let print_type = function 
   | Builtintype(a) -> a;;
@@ -78,12 +78,12 @@ let rec print_stmt ind = function
      print_stmt (ind + 1) [d];
      print_ind ind "}\n";
   | [Function(Builtintype(t), identifier, identifiers, stmt)] ->
-     print_ind 0 t;
-     printf " %s" identifier;
+     print_ind ind (t ^ " ");
+     printf "%s" identifier;
      printf "(%s) " (exprs identifiers);
      printf("{\n");
-     print_stmt 1 [stmt];
-     printf("}\n");
+     print_stmt (ind+1) [stmt];
+     print_ind ind "}\n";
   | [Comment(s)] ->     
      print_ind ind ("/*" ^ s ^ "*/");
      printf "\n";     

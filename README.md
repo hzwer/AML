@@ -42,7 +42,7 @@ double f = 1.0;
 string s = "1";
 bool b = true;
 ang d = (1, 0);
-vec v = (1, 1);
+vec2f v = (1, 1);
 ```
 
 ### Arithmetic
@@ -71,24 +71,22 @@ for(int i = 1; i <= 100; i = i + 1) {
 ### Condition
 ```c
 int a = 3;
-if (a > 2) {
+if (a > 2)
   println("Yes");
-} else {
+else {
   println("No");
 }
 ```
 
 ### Recursion
 
-```
+```c
 int fibonacci(int num) {
-  if (num == 0) {
+  if (num == 0)
     return(0);
-  } else if(num == 1){
+  else if(num == 1)
     return(1);
-  } else {
-    return (fibonacci(num - 2) + fibonacci(num - 1));
-  }
+  else return (fibonacci(num - 2) + fibonacci(num - 1));
 }
 ```
 ## Contributors

@@ -20,9 +20,7 @@ rule token =
   | white          { token lexbuf }
   | "/*"           { read_comment (Buffer.create 128) lexbuf }
   | "//"           { read_line_comment (Buffer.create 128) lexbuf }
-  | "agent"        { AGENT }
-  | "init"         { INIT }
-  | "step"         { STEP }
+  | "Agent"        { AGENT }
   | "if"           { IF }
   | "else"         { ELSE }
   | "for"          { FOR }
@@ -31,7 +29,7 @@ rule token =
   | "string"       { TSTRING }
   | "bool"         { TBOOL }
   | "ang"          { TANGLE }
-  | "vec"          { TVECTOR }
+  | "vec2f"        { TVECTOR }
   | "void"         { VOID }
   | "true"         { BOOL (true) }
   | "false"        { BOOL (false) }

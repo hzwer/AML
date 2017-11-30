@@ -77,27 +77,26 @@ let rec print_stmt ind = function
      printf ") {\n";
      print_stmt (ind + 1) [d];
      print_ind ind "}\n";
-  | [Comment(s)] ->     
-     print_ind ind ("/*" ^ s ^ "*/");
-     printf "\n";
-  | [Stmts(x)] -> print_stmt ind x;
-  | h :: t -> print_stmt ind [h];
-              print_stmt ind t;;
- 
-let rec print_toplevel = function
-  | Agent(init_list, step_list) ->
-     printf("Agent{\nInit{\n");
-     print_stmt 0 [init_list];
-     printf("}\nvoid Step() {\n");
-     print_stmt 0 [step_list];
-     printf("}\n};\n");
-  | Function(Builtintype(t), identifier, identifiers, stmt) ->
+  | [Function(Builtintype(t), identifier, identifiers, stmt)] ->
      print_ind 0 t;
      printf " %s" identifier;
      printf "(%s) " (exprs identifiers);
      printf("{\n");
      print_stmt 1 [stmt];
      printf("}\n");
+  | [Comment(s)] ->     
+     print_ind ind ("/*" ^ s ^ "*/");
+     printf "\n";     
+  | [Stmts(x)] -> print_stmt ind x;
+  | h :: t -> print_stmt ind [h];
+              print_stmt ind t;;
+ 
+let rec print_toplevel = function
+  | Agent(identifier, stmt) ->
+     printf "class _%s: public _Agent{\n" identifier;
+     printf "public:\n";
+     print_stmt 1 [stmt];
+     printf("};\n");
   | Stmt(x) -> print_stmt 0 [x];;
 
 let rec print_t = function

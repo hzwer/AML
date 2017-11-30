@@ -1,8 +1,8 @@
 int main(){
-     println(vec(1, 2));
-     println(vec(0, 0) + vec(1, 1));
-     vec a = vec(3, 5);
-     vec b = vec(1, 5);
+     println(vec2f(1, 2));
+     println(vec2f(0, 0) + vec2f(1, 1));
+     vec2f a = vec2f(3, 5);
+     vec2f b = vec2f(1, 5);
      double d = 2.1;     
      println(a + b);
      println(a - b);

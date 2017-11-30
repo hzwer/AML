@@ -34,11 +34,11 @@ and stmt =
   | IfElse of (expr * stmt * stmt)
   | For of (stmt * expr * stmt * stmt)
   | Comment of string
+  | Function of (builtintype * identifier * exprs * stmt)
   | Empty
            
 and toplevel = 
-  | Agent of stmt * stmt
+  | Agent of identifier * stmt
   | Stmt of stmt
-  | Function of (builtintype * identifier * exprs * stmt)
 
 and t = toplevel list;;

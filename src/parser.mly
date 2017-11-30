@@ -1,7 +1,5 @@
 %{ open Ast %}
 %token AGENT
-%token INIT
-%token STEP
 %token <float> FLOAT
 %token <string> STRING
 %token <string> IDENTIFIER
@@ -59,19 +57,12 @@
     toplevel_list EOF               { $1 }
 
   toplevel:
-    | builtintype IDENTIFIER LPAREN expr_list RPAREN stmt      { Function($1, $2, $4, $6) }
-    | AGENT LBRACE init step RBRACE { Agent($3, $4) }
+    | AGENT IDENTIFIER stmt SEMICOLON { Agent($2, $3) }
     | stmt                          { Stmt($1) }
     
   toplevel_list:
     | { [] }
     | toplevel toplevel_list      { $1 :: $2 }
-
-  init:
-    | INIT LBRACE stmt RBRACE    { $3 }
-  
-  step:
-    | STEP LBRACE stmt RBRACE   { $3 }
 
   leftvalue:
     | IDENTIFIER                      { Identifier($1) }
@@ -120,6 +111,7 @@
     | COMMENT                              { Comment($1) }
     | assignment SEMICOLON                 { $1 }
     | expr SEMICOLON                       { Expr($1) }
+    | builtintype IDENTIFIER LPAREN expr_list RPAREN stmt      { Function($1, $2, $4, $6) }
     | LBRACE stmt_list RBRACE              { Stmts($2) }
     
   stmt_list:
@@ -134,6 +126,7 @@
     | TANGLE                        { Builtintype("ang") }
     | TVECTOR                       { Builtintype("vec2f") }
     | VOID                          { Builtintype("void") }
+    | IDENTIFIER                    { Builtintype($1) }
 
   unary_op:
     | NOT expr                      { Unop ("!", $2) }

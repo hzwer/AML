@@ -51,15 +51,41 @@ public:
     angle(Float r){
         p=vec2f(cos(r),sin(r));
     }
-    angle operator + (Float d){
+    operator Float(){
+        return atan2(p.y,p.x);
+    }
+    angle operator + (const angle &q){
         //cos(a+b)=cos(a)cos(b)-sin(a)sin(b)
         //sin(a+b)=cos(a)sin(b)+sin(a)cos(b)
-        return angle(p.x*cos(d)-p.y*sin(d),  p.x*sin(d)+p.y*cos(d));
+        return angle(p.x*q.p.x-p.y*q.p.y, p.x*q.p.y+p.y*q.p.x);
     }
-    angle operator - (Float d){
+    angle operator + (Float d){
+        return *this+angle(d);
+        //return angle(p.x*cos(d)-p.y*sin(d),  p.x*sin(d)+p.y*cos(d));
+    }
+    angle operator - (const angle &q){
         //cos(a-b)=cos(a)cos(b)+sin(a)sin(b)
         //sin(a-b)=sin(a)cos(b)-cos(a)sin(b)
+        return angle(p.x*q.p.x+p.y*q.p.y, -p.x*q.p.y+p.y*q.p.x);
+    }
+    angle operator - (Float d){
+        return *this-angle(d);
         return angle(p.x*cos(d)+p.y*sin(d), -p.x*sin(d)+p.y*cos(d));
+    }
+    bool operator < (const angle &b){
+        return p._crossprd(b.p)>0;
+    }
+    bool operator <= (const angle &b){
+        return p._crossprd(b.p)>=0;
+    }
+    bool operator > (const angle &b){
+        return p._crossprd(b.p)<0;
+    }
+    bool operator >= (const angle &b){
+        return p._crossprd(b.p)<=0;
+    }
+    bool operator == (const angle &b){
+        return p._crossprd(b.p)==0;
     }
     angle operator * (Float d){
         Float r=atan2(p.y,p.x);

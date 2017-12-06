@@ -128,8 +128,8 @@ let read_all file =
 let _ =
   if Array.length Sys.argv = 1 then printf "Expect ./main.native [file]\n"
   else let file = Sys.argv.(1) in
-       addlib "lib/header.ml";
-       
+       addlib "lib/header.ml";       
+       if Array.length Sys.argv > 2 then addlib "lib/header-agent.ml";       
        let tokens = Lexing.from_channel (open_in file) in
        let t = Parser.main Lexer.token tokens in 
        print_t(t);

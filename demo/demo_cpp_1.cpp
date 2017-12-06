@@ -73,6 +73,7 @@ public:
         *this = *_from;
     }
 };
+
 vector<pair<_Agent*,_Agent*> > _agents;
 double _dt=1/_FPS*_SPEEDUP_RATE;
 double _cur_tim=0.0;
@@ -113,4 +114,3 @@ int main(int argc, char *argv[]){
     glutMainLoop();
     return 0;
 }
-

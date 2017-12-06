@@ -1,11 +1,13 @@
-// produced by AML
+// Produced by AML
 #include "geolib.h"
-#include <cmath>
-#include <cstdio>
-#include <cstring>
-#include <iostream>
-#include <algorithm>  
-using namespace std;  
+// Add the header for agent
+#include "cglib.h"
+
+double _FPS=60.0;
+// unit is "meter" for them
+double _MAP_X=10,_MAP_Y=10;
+vec2f _MAP_CENTER(0,5); // 5m
+double _SPEEDUP_RATE=1;
 class _Ball: public _Agent{
 public:
     vec2f pos;

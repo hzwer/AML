@@ -1,11 +1,5 @@
-// produced by AML
+// Produced by AML
 #include "geolib.h"
-#include <cmath>
-#include <cstdio>
-#include <cstring>
-#include <iostream>
-#include <algorithm>  
-using namespace std;  
 int fibonacci(int num) {
     if((num == 0)) {
         return 0;

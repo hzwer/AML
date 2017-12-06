@@ -1,11 +1,5 @@
-// produced by AML
+// Produced by AML
 #include "geolib.h"
-#include <cmath>
-#include <cstdio>
-#include <cstring>
-#include <iostream>
-#include <algorithm>  
-using namespace std;  
 int main() {
     cout << vec2f(1, 2) << endl;
     cout << (vec2f(0, 0) + vec2f(1, 1)) << endl;

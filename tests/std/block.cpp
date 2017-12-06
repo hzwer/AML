@@ -1,17 +1,15 @@
-// produced by AML
+// Produced by AML
 #include "geolib.h"
-#include <cmath>
-#include <cstdio>
-#include <cstring>
-#include <iostream>
-#include <algorithm>  
-using namespace std;  
 int main() {
+    /*Level 0 Start*/
     cout << "Hello" << endl;
     /*Level 1 Start*/
+    cout << "Lo" << endl;
     /*Level 2 Start*/
-    cout << "mid" << endl;
+    cout << "and behold" << endl;
     /*Level 2 End*/
     /*Level 1 End*/
     cout << "End" << endl;
+    /*Level 0 End*/
+    return 0;
 }

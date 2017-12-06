@@ -12,46 +12,23 @@ let rec print_leftvalue = function
   | Identifier(x) -> x;
   | TypeIdentifier(Builtintype(t), x) -> t ^ " " ^ x;;
 
-let rec print_cout e =
+let rec print_stmt ind e =
   match e with
-   | [] -> "\"\""
-   | [x] -> exprs [x]
-   | h :: t -> (exprs [h]) ^ " <<' '<< " ^ (print_cout t)
-             
-and exprs e =
-  match e with
-  | [] -> ""
-  | [Int(a)] -> string_of_int(a)
-  | [Bool(a)] -> string_of_bool(a)
-  | [Float(a)] -> string_of_float(a)
-  | [String(s)] -> s
-  | [Angle(a, b)] -> "ang(" ^ (exprs [a]) ^ ", " ^ (exprs [b]) ^ ")"
-  | [Vector(a, b)] -> "vec2f(" ^ (exprs [a]) ^ ", " ^ (exprs [b]) ^ ")"
-  | [Leftvalue(a)] -> print_leftvalue a
-  | [Binop(op, e1, e2)] ->
-     "(" ^ (exprs [e1]) ^ " " ^ op ^ " " ^ (exprs [e2]) ^ ")"
-  | [Unop(op, e)] ->
-     "(" ^ op ^ (exprs [e]) ^ ")"
-  | [Call(identifier, identifiers)] ->
-     identifier ^
-       (
-         if (identifier = "return") then (" " ^ (exprs identifiers))
-         else ("(" ^ (exprs identifiers) ^ ")")
-       )
-  | [Println(exprs)] ->
-     "cout << " ^ print_cout exprs ^ " << endl";
-  | h :: t -> (exprs [h]) ^ ", " ^ (exprs t);;
-  
-let print_type = function 
-  | Builtintype(a) -> a;;
-  
-let print_assign = function
-  | Assign(a, e) -> (print_leftvalue a) ^ " = " ^ (exprs [e])
-  | other -> "fault";;
-              
-let rec print_stmt ind = function
   | [] -> ""
   | [Empty] -> ";\n"
+             
+  | [Expr(Call("register", identifiers))] ->
+     (print_stmt ind [register identifiers])
+
+  | [Expr(Call("plotvec2f", identifiers))] ->
+     (print_stmt ind [Expr(Call("_AML_Vertex2f", identifiers))])
+    
+  | [Function(t, "project", identifiers, stmt)] ->
+     print_stmt ind [pre_main(Function(t, "main", identifiers, stmt))]
+
+  | [Expr(String(s))] ->
+     (print_ind ind (exprs [String(s)]))
+     ^ "\n"    
   | [Expr(e)] ->
      (print_ind ind (exprs [e]))
      ^ ";\n"
@@ -80,18 +57,68 @@ let rec print_stmt ind = function
      ^ (print_stmt (ind + 1) [d])
      ^ (print_ind ind "}\n")
   | [Function(Builtintype(t), identifier, identifiers, stmt)] ->
-     (print_ind ind (t ^ " "))
-     ^ identifier
-     ^ "(" ^ (exprs identifiers) ^ ")"
-     ^ " {\n"
-     ^ (print_stmt (ind+1) [stmt])
-     ^ (print_ind ind "}\n")
+     if identifier = "__main__" then ((print_ind ind (t ^ " "))
+                                           ^ "main"
+                                           ^ "(" ^ (exprs identifiers) ^ ")"
+                                           ^ " {\n"
+                                           ^ (print_stmt (ind+1) [stmt])
+                                           ^ (print_ind ind "}\n")
+                                          )
+     else (
+       (* if identifier = "__main__" then identifier = "main"; *)
+       ((print_ind ind (t ^ " "))
+        ^ identifier
+        ^ "(" ^ (exprs identifiers) ^ ")"
+        ^ " {\n"
+        ^ (print_stmt (ind+1) [stmt])
+        ^ (print_ind ind "}\n")
+       )
+     )
   | [Comment(s)] ->     
      (print_ind ind ("/*" ^ s ^ "*/"))
      ^ "\n"
   | [Stmts(x)] -> print_stmt ind x;
   | h :: t -> (print_stmt ind [h])
-              ^ (print_stmt ind t);;
+              ^ (print_stmt ind t)            
+  
+and print_cout e =
+  match e with
+   | [] -> "\"\""
+   | [x] -> exprs [x]
+   | h :: t -> (exprs [h]) ^ " <<' '<< " ^ (print_cout t)
+             
+and exprs e =
+  match e with
+  | [] -> ""
+  | [Int(a)] -> string_of_int(a)
+  | [Bool(a)] -> string_of_bool(a)
+  | [Float(a)] -> string_of_float(a)
+  | [String(s)] -> s
+  | [Angle(a, b)] -> "ang(" ^ (exprs [a]) ^ ", " ^ (exprs [b]) ^ ")"
+  | [Vector(a, b)] -> "vec2f(" ^ (exprs [a]) ^ ", " ^ (exprs [b]) ^ ")"
+  | [Leftvalue(a)] -> print_leftvalue a
+  | [Binop(op, e1, e2)] ->
+     "(" ^ (exprs [e1]) ^ " " ^ op ^ " " ^ (exprs [e2]) ^ ")"
+  | [Unop(op, e)] ->
+     "(" ^ op ^ (exprs [e]) ^ ")"
+  | [Call(identifier, identifiers)] ->
+     (identifier ^
+        (
+          if (identifier = "return") then (" " ^ (exprs identifiers))
+          else ("(" ^ (exprs identifiers) ^ ")")
+     ))          
+  | [Println(exprs)] ->
+     "cout << " ^ print_cout exprs ^ " << endl"
+  | h :: t -> (exprs [h]) ^ ", " ^ (exprs t)
+  
+and print_type e = 
+  match e with
+  | Builtintype(a) -> a
+  
+and print_assign e =
+  match e with
+  | Assign(a, e) -> (print_leftvalue a) ^ " = " ^ (exprs [e])
+  | other -> "fault";;             
  
 let rec print_toplevel = function
   | Agent(identifier, stmt) ->

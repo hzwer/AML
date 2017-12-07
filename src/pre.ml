@@ -1,5 +1,27 @@
 open Ast
 
+let rec pre_agent_fun indentifier = function
+    Function(t, "step", identifiers, stmt) ->
+    Function(t, "_step", [String("double _tim, double _dtim, _Agent* _last_Agent")], stmt)
+  | Function(t, "plot", identifiers, stmt) ->
+     Function(t, "_plot", [String("double _tim, double _dtim")], stmt)
+  | Function(t, identifier, identifiers, stmt) ->
+     Function(t, "_" ^ identifier, identifiers, stmt)
+  | x -> x
+       
+let pre_agent = function
+    Agent(identifier, Stmts(stmt)) ->
+    let _stmt = Stmts(List.concat [
+                          (List.map (pre_agent_fun identifier) stmt);
+                          [
+                            Expr(String("void _copy_from(_Agent *_from_Agent){
+        _Ball* _from = (_Ball*)_from_Agent;
+        *this = *_from;
+    }"))
+                     ]])
+    in Agent("_" ^ identifier, _stmt)
+  | x -> x;;
+
 let pre_main = function
     Function(t, identifier, identifiers, stmt) ->
   let _stmt = 
@@ -38,7 +60,7 @@ void _Step_Time(int _time_value){
 }
 "))        
   in
-  Stmts([prev; Function(t, "main", identifiers, _stmt)])
+  Stmts([prev; Function(Builtintype("int"), "main", [String("int argc, char *argv[]")], _stmt)])
   | x -> x;;
     
 let register = function

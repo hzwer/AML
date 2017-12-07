@@ -1,14 +1,14 @@
 Agent Ball{
     vec2f pos;
     vec2f vel;
-    _Ball(){
+    Ball(){
         pos = vec2f(0,10);
     }
-    void _plot(double t, double dt){
+    void plot(){
         glColor3f(1.0,1.0,1.0);
         glBegin(GL_LINES);
         plotvec2f(pos); 
-        plotvec2f(pos+vel*0.1/dt);
+        plotvec2f(pos + vel * 0.1 / _dtim);
         glEnd();
         glFlush();
         glColor3f(1.0,0.0,0.0);
@@ -17,13 +17,12 @@ Agent Ball{
         glEnd();
         glFlush();
     }
-    int step(double t,double dt){
-        pos = vec2f(0.0,10-tim*tim*4.9);
-        // vel = ''pos;
+    void step(){
+        pos = vec2f(0.0,10- _tim * _tim * 4.9);
+        vel = pos;
     }
 };
 
-int main(){
-   Ball a;
-   register(a);
+project(){
+    register(Ball);
 }

@@ -41,3 +41,7 @@ example/variable.cpp
 *.h~
 
 *.cpp~
+
+cglib.h
+
+geolib.h

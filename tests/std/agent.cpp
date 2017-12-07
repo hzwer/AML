@@ -23,6 +23,17 @@ void _Set_Speedup_Rate(double _rate){
 void _SET_FPS(double _fps){
     _FPS = _fps;
 }
+void _AML_Vertex2f(vec2f pos){
+    pos = pos - _MAP_CENTER;
+    pos = (pos/_MAP_X*2.0, pos/_MAP_Y*2.0);
+    glVertex2f(pos.x,pos.y);
+}
+class _Agent{
+public:
+    virtual void _plot(double,double)=0;
+    virtual void _step(double,double,_Agent*)=0;
+    virtual void _copy_from(_Agent*)=0;
+};
 class _Ball: public _Agent{
 public:
     vec2f pos;
@@ -30,25 +41,61 @@ public:
      _Ball() {
         pos = vec2f(0, 10);
     }
-    void _plot(double t, double dt) {
+    void _plot(double _tim, double _dtim) {
         glColor3f(1., 1., 1.);
         glBegin(GL_LINES);
-        plotvec2f(pos);
-        plotvec2f((pos + ((vel * 0.1) / dt)));
+        _AML_Vertex2f(pos);
+        _AML_Vertex2f((pos + ((vel * 0.1) / _dtim)));
         glEnd();
         glFlush();
         glColor3f(1., 0., 0.);
         glBegin(GL_POINTS);
-        plotvec2f(pos);
+        _AML_Vertex2f(pos);
         glEnd();
         glFlush();
     }
-    int step(double t, double dt) {
-        pos = vec2f(0., (10 - (tim *tim * 4.9)));
-        /* vel = ''pos;*/
+    void _step(double _tim, double _dtim, _Agent* _last_Agent) {
+        pos = vec2f(0., (10 - ((_tim * _tim) * 4.9)));
+        vel = pos;
+    }
+    void _copy_from(_Agent *_from_Agent){
+        _Ball* _from = (_Ball*)_from_Agent;
+        *this = *_from;
     }
 };
-int main() {
-    Ball a;
-    register(a);
+
+vector<pair<_Agent*,_Agent*> > _agents;
+double _dt=1/_FPS*_SPEEDUP_RATE;
+double _cur_tim=0.0;
+void _Plot(void){
+    glClear(GL_COLOR_BUFFER_BIT);
+    for(int i=0;i<_agents.size();i++){
+        _agents[i].second->_plot(_cur_tim, _dt);
+    }
+    glutSwapBuffers();
+}
+void _Step_Time(int _time_value){
+    //printf("step time: %d\n",_time_value);
+    for(int i=0;i<_agents.size();i++){
+        _agents[i].second->_step(_cur_tim,_dt,_agents[i].first);
+        _agents[i].first->_copy_from(_agents[i].second);
+    }
+    _cur_tim+=_dt;
+    glutPostRedisplay();
+    glutTimerFunc(1000/_FPS, _Step_Time, 1);
+}
+
+int main(int argc, char *argv[]) {
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitWindowPosition(100, 100);
+    glutInitWindowSize(500, 500);
+    int glut_window = glutCreateWindow("AML");
+    _Agent *sp1 = new _Ball;
+    _Agent *sp2 = new _Ball;
+    *sp2 = *sp1;
+    _agents.push_back(make_pair(sp2,sp1));
+    glutDisplayFunc(&_Plot);
+    glutTimerFunc(1000/_FPS, _Step_Time, 1);
+    glutMainLoop();
 }

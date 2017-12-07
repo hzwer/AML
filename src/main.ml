@@ -119,13 +119,18 @@ and print_assign e =
   match e with
   | Assign(a, e) -> (print_leftvalue a) ^ " = " ^ (exprs [e])
   | other -> "fault";;             
- 
+  
 let rec print_toplevel = function
   | Agent(identifier, stmt) ->
-     printf "class _%s: public _Agent{\n" identifier;
-     printf "public:\n";
-     printf "%s" (print_stmt 1 [stmt]);
-     printf("};\n");
+     if identifier.[0] = '_' then (
+       printf "class %s: public _Agent{\n" identifier;
+       printf "public:\n";
+       printf "%s" (print_stmt 1 [stmt]);
+       printf("};\n")
+     )
+     else (
+       print_toplevel(pre_agent(Agent(identifier, stmt)));
+     )
   | Stmt(x) -> printf "%s" (print_stmt 0 [x]);;
 
 let rec print_t = function

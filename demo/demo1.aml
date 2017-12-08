@@ -16,8 +16,8 @@ Agent Ball{
         glEnd();
     }
     void step(){
-        pos = vec2f(0.0, 10 - _tim * _tim * 4.9);
-        vel = pos;
+        pos = vec2f(0.0, 10 - _tim * _tim * 4.9); // free fall
+        vel = pos'; // first order difference
     }
 };
 

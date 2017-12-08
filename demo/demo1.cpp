@@ -1,10 +1,12 @@
+// Produced by AML
 #include "geolib.h"
+// Add the header for agent
 #include "cglib.h"
-
+                    
 double _FPS=60.0;
-//unit is "meter" for them
-double _MAP_X=10,_MAP_Y=10;
-vec2f _MAP_CENTER(0,5);//5m
+// unit is "meter" for them
+double _MAP_X=20,_MAP_Y=20;
+vec2f _MAP_CENTER(0,0); // 5m
 double _SPEEDUP_RATE=1;
 
 //must allowed user-defination interfaces:
@@ -21,14 +23,11 @@ void _Set_Speedup_Rate(double _rate){
 void _SET_FPS(double _fps){
     _FPS = _fps;
 }
-//interfaces end
-
 void _AML_Vertex2f(vec2f pos){
     pos = pos - _MAP_CENTER;
     pos = (pos/_MAP_X*2.0, pos/_MAP_Y*2.0);
     glVertex2f(pos.x,pos.y);
 }
-
 class _Agent{
 public:
     virtual void _plot(double,double)=0;
@@ -38,35 +37,29 @@ public:
 class _Ball: public _Agent{
 public:
     vec2f pos;
-    vec2f _d_pos;//detect reference of "'pos", automatically create it
-    vec2f _d_d_pos;
     vec2f vel;
-    _Ball(void){
-        pos=vec2f(0,10);
+     _Ball() {
+        pos = vec2f(0, 10);
     }
-    void _plot(double _tim, double _dt){
-        //printf("%lf %lf\n",pos.x,pos.y);
-        glColor3f(1.0,1.0,1.0);
+    void _plot(double _tim, double _dtim) {
+        glColor3f(1., 1., 1.);
         glBegin(GL_LINES);
-        //glVertex2f(-1,-1);
-        //glVertex2f(1,1);
         _AML_Vertex2f(pos);
-        vec2f nxt=pos+vel*0.1/_dt;
-        _AML_Vertex2f(nxt);
+        _AML_Vertex2f((pos + ((vel * 0.1) / _dtim)));
+        glEnd();
+        glColor3f(1., 0., 0.);
+        glBegin(GL_POINTS);
+        _AML_Vertex2f(pos);
         glEnd();
         glFlush();
-		glColor3f(1.0, 0.0, 0.0);
-		glBegin(GL_POINTS);
-		_AML_Vertex2f(pos);
-		glEnd();
-		glFlush();
+
     }
-    void _step(double _tim, double _dt, _Agent* _last_Agent){//_tim is counted by seconds
+    void _step(double _tim, double _dtim, _Agent* _last_Agent) {
         _Ball* _last = (_Ball*)_last_Agent;
-        pos = vec2f(0.0, 10 - _tim * _tim * 4.9);//free fall
-         _d_pos = pos - (_last->pos);
-         _d_d_pos = _d_pos - (_last->_d_pos);
-         vel = _d_pos;
+        pos = vec2f(0., (10 - ((_tim * _tim) * 4.9)));
+        /* free fall*/
+        vel = (pos - (_last->pos));
+        /* first order difference*/
     }
     void _copy_from(_Agent *_from_Agent){
         _Ball* _from = (_Ball*)_from_Agent;
@@ -95,16 +88,12 @@ void _Step_Time(int _time_value){
     glutTimerFunc(1000/_FPS, _Step_Time, 1);
 }
 
-int main(int argc, char *argv[]){
-    /*function calls such as _SET_MAP_XY must be filled here
-    */
+int main(int argc, char *argv[]) {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);//double buffer
-    //todo: user shall be able to designate these things in AML
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutInitWindowPosition(100, 100);
-    glutInitWindowSize(500, 500); 
+    glutInitWindowSize(500, 500);
     int glut_window = glutCreateWindow("AML");
-    //end todo
     _Agent *sp1 = new _Ball;
     _Agent *sp2 = new _Ball;
     *sp2 = *sp1;
@@ -112,5 +101,4 @@ int main(int argc, char *argv[]){
     glutDisplayFunc(&_Plot);
     glutTimerFunc(1000/_FPS, _Step_Time, 1);
     glutMainLoop();
-    return 0;
 }

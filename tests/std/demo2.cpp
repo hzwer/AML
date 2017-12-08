@@ -68,8 +68,8 @@ public:
         double dlt = (((_dtim / 10) * 2) * PI);
         theta = (theta + dlt);
         pos = (vec2f(cos(theta), sin(theta)) * 5);
-        /* operator :> means "when > holds true for the first time"*/
         if((!(_last->theta > angle(0))&&(theta > angle(0)))) {
+            /* operator :> means "when > holds true for the first time"*/
             color = (color ^ 1);
         }
     }

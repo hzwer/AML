@@ -1,0 +1,40 @@
+Agent Blinker{
+    angle theta;
+    vec2f pos;
+    int color;
+    double PI;
+    Blinker(){
+        theta=0;
+        color=0;
+        PI=acos(-1.0);
+    }
+    void plot(){
+        vec2f a=pos+vec2f(0,1);
+        vec2f b=pos+vec2f(-0.866,-0.5);
+        vec2f c=pos+vec2f(0.866,-0.5);
+        if(color==0){
+            glColor3f(1.0,0.0,0.0);
+        }
+        else{
+            glColor3f(0.0,0.0,1.0);
+        }
+        glBegin(GL_TRIANGLES);
+        plotvec2f(a);
+        plotvec2f(b);
+        plotvec2f(c);
+        glEnd();
+    }
+    void step(){
+        double dlt=_dtim/10*2*PI;
+        theta = theta + dlt;
+        pos=vec2f(cos(theta),sin(theta))*5;
+        // operator :> means "when > holds true for the first time"
+        // if(theta:>0){
+        if(theta > angle(0)){
+            color = color ^ 1;
+        }
+}
+};
+project(){
+    register(Blinker);
+}

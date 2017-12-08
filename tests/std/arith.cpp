@@ -11,5 +11,6 @@ int main() {
     cout << (!true) << endl;
     cout << (!false) << endl;
     cout << (!(2 - 1)) << endl;
+    cout << -1. << endl;
     return 0;
 }

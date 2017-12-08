@@ -44,7 +44,7 @@ let pre_agent = function
                           (List.map (pre_agent_fun identifier) stmt);
                           [
                             Expr(String("void _copy_from(_Agent *_from_Agent){
-        _Ball* _from = (_Ball*)_from_Agent;
+        _" ^ identifier ^"* _from = (_" ^ identifier ^"*)_from_Agent;
         *this = *_from;
     }"))
                      ]])

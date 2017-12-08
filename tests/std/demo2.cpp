@@ -34,33 +34,48 @@ public:
     virtual void _step(double,double,_Agent*)=0;
     virtual void _copy_from(_Agent*)=0;
 };
-class _Ball: public _Agent{
+class _Blinker: public _Agent{
 public:
+    angle theta;
     vec2f pos;
-    vec2f vel;
-     _Ball() {
-        pos = vec2f(0, 10);
+    int color;
+    double PI;
+     _Blinker() {
+        theta = 0;
+        color = 0;
+        PI = acos(-1.);
     }
     void _plot(double _tim, double _dtim) {
-        glColor3f(1., 1., 1.);
-        glBegin(GL_LINES);
-        _AML_Vertex2f(pos);
-        _AML_Vertex2f((pos + ((vel * 0.1) / _dtim)));
-        glEnd();
-        glColor3f(1., 0., 0.);
-        glBegin(GL_POINTS);
-        _AML_Vertex2f(pos);
+        vec2f a = (pos + vec2f(0, 1));
+        vec2f b = (pos + vec2f(-0.866, -0.5));
+        vec2f c = (pos + vec2f(0.866, -0.5));
+        if((color == 0)) {
+            glColor3f(1., 0., 0.);
+        }
+        else {
+            glColor3f(0., 0., 1.);
+        }
+        glBegin(GL_TRIANGLES);
+        _AML_Vertex2f(a);
+        _AML_Vertex2f(b);
+        _AML_Vertex2f(c);
         glEnd();
         glFlush();
 
     }
     void _step(double _tim, double _dtim, _Agent* _last_Agent) {
-        _Ball* _last = (_Ball*)_last_Agent;
-        pos = vec2f(0., (10 - ((_tim * _tim) * 4.9)));
-        vel = (pos - (_last->pos));
+        _Blinker* _last = (_Blinker*)_last_Agent;
+        double dlt = (((_dtim / 10) * 2) * PI);
+        theta = (theta + dlt);
+        pos = (vec2f(cos(theta), sin(theta)) * 5);
+        /* operator :> means "when > holds true for the first time"*/
+        /* if(theta:>0){*/
+        if((theta > angle(0))) {
+            color = (color ^ 1);
+        }
     }
     void _copy_from(_Agent *_from_Agent){
-        _Ball* _from = (_Ball*)_from_Agent;
+        _Blinker* _from = (_Blinker*)_from_Agent;
         *this = *_from;
     }
 };
@@ -92,8 +107,8 @@ int main(int argc, char *argv[]) {
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(500, 500);
     int glut_window = glutCreateWindow("AML");
-    _Agent *sp1 = new _Ball;
-    _Agent *sp2 = new _Ball;
+    _Agent *sp1 = new _Blinker;
+    _Agent *sp2 = new _Blinker;
     *sp2 = *sp1;
     _agents.push_back(make_pair(sp2,sp1));
     glutDisplayFunc(&_Plot);

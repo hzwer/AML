@@ -79,7 +79,7 @@
     | unary_op                      { $1 }
     | call_stmt                     { $1 }
     | TVECTOR LPAREN expr COMMA expr RPAREN { Vector($3, $5) }
-    | TANGLE LPAREN expr COMMA expr RPAREN { Angle($3, $5) }
+    | TANGLE LPAREN expr RPAREN { Angle($3) }
 
   expr_list:
     | { [] }
@@ -124,13 +124,14 @@
     | TDOUBLE                       { Builtintype("double") }
     | TSTRING                       { Builtintype("string") }
     | TBOOL                         { Builtintype("bool") }
-    | TANGLE                        { Builtintype("ang") }
+    | TANGLE                        { Builtintype("angle") }
     | TVECTOR                       { Builtintype("vec2f") }
     | VOID                          { Builtintype("void") }
     | IDENTIFIER                    { Builtintype($1) }
 
   unary_op:
     | NOT expr                      { Unop ("!", $2) }
+    | MINUS expr                    { Unop ("-", $2) }
     
   binary_op:
     | expr TIMES expr               { Binop("*", $1, $3) }

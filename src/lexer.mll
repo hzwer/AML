@@ -9,7 +9,7 @@ let int = '-'? ['0'-'9'] ['0'-'9']*
 let digit = ['0'-'9']
 let frac = '.' digit*
 let exp = ['e' 'E'] ['-' '+']? digit+
-let float = digit* frac? exp?
+let float = '-'? digit* frac+ exp?
 let white = [' ' '\t']+
 let string = ['"'] ['a'-'z' 'A'-'Z' '0'-'9' '_' ' ']* ['"']
 let newline = '\r' | '\n' | "\r\n"
@@ -28,7 +28,7 @@ rule token =
   | "double"       { TDOUBLE }
   | "string"       { TSTRING }
   | "bool"         { TBOOL }
-  | "ang"          { TANGLE }
+  | "angle"          { TANGLE }
   | "vec2f"        { TVECTOR }
   | "void"         { VOID }
   | "true"         { BOOL (true) }

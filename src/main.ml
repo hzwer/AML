@@ -98,7 +98,7 @@ and exprs e =
   | [Bool(a)] -> string_of_bool(a)
   | [Float(a)] -> string_of_float(a)
   | [String(s)] -> s
-  | [Angle(a, b)] -> "ang(" ^ (exprs [a]) ^ ", " ^ (exprs [b]) ^ ")"
+  | [Angle(a)] -> "angle(" ^ (exprs [a]) ^ ")"
   | [Vector(a, b)] -> "vec2f(" ^ (exprs [a]) ^ ", " ^ (exprs [b]) ^ ")"
   | [Leftvalue(a)] -> print_leftvalue a
   | [Binop(op, e1, e2)] ->

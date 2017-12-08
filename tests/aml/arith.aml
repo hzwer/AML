@@ -9,5 +9,6 @@ int main(){
      println(!true);
      println(!false);
      println(!(2 - 1));
+     println(-1.0);
      return(0);
 }

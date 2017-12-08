@@ -18,7 +18,7 @@ and expr =
   | Int of int
   | Float of float
   | String of string
-  | Angle of expr * expr
+  | Angle of expr
   | Vector of expr * expr
   | Leftvalue of leftvalue
   | Unop of string * expr

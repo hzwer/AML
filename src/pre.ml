@@ -2,6 +2,12 @@
 open Ast
 open Printf
 
+let remove_first_op x =
+  let len = String.length x
+  in
+  if (x.[0] = ':') then (String.sub x 1 (len - 1))
+  else x
+   
 let remove_diff x =
   let len = String.length x
   in
@@ -10,6 +16,9 @@ let remove_diff x =
 
 let is_diff x =
   x != (remove_diff x)
+
+let is_first_op x =
+  x != (remove_first_op x)
   
 let rec gather_diff list = function
     Assign(l, Leftvalue(Identifier e)) ->

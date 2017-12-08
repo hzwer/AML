@@ -69,8 +69,7 @@ public:
         theta = (theta + dlt);
         pos = (vec2f(cos(theta), sin(theta)) * 5);
         /* operator :> means "when > holds true for the first time"*/
-        /* if(theta:>0){*/
-        if((theta > angle(0))) {
+        if((!(_last->theta > angle(0))&&(theta > angle(0)))) {
             color = (color ^ 1);
         }
     }

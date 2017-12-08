@@ -21,8 +21,6 @@
 %token PLUS MINUS TIMES DIV
 %token LPAREN RPAREN
 %token NOT
-%token SEQ
-%token SNE
 %token EQUAL
 %token EOF
 %token COMMA
@@ -33,15 +31,25 @@
 %token BINAND
 %token BINXOR
 %token BINOR
+
+%token SEQ
+%token SNE
 %token GT
 %token LT
 %token GE
 %token LE
 
+%token FSEQ
+%token FSNE
+%token FGT
+%token FLT
+%token FGE
+%token FLE
+
 %left AND OR
 %left BINAND BINXOR BINOR
-%nonassoc SEQ SNE
-%nonassoc GT LT GE LE
+%nonassoc SEQ SNE FSEQ FSNE
+%nonassoc GT LT GE LE FGT FLT FGE FLE
 %nonassoc NOT
 %left PLUS MINUS
 %left DIV TIMES MOD
@@ -139,12 +147,21 @@
     | expr PLUS expr                { Binop("+", $1, $3) }
     | expr MINUS expr               { Binop("-", $1, $3) }
     | expr MOD expr                 { Binop("%", $1, $3) }
+
     | expr GT expr                  { Binop(">", $1, $3) }
     | expr LT expr                  { Binop("<", $1, $3) }
     | expr GE expr                  { Binop(">=", $1, $3) }
     | expr LE expr                  { Binop("<=", $1, $3) }
     | expr SEQ expr                 { Binop("==", $1, $3) }
     | expr SNE expr                 { Binop("!=", $1, $3) }
+
+    | expr FGT expr                  { Binop(":>", $1, $3) }
+    | expr FLT expr                  { Binop(":<", $1, $3) }
+    | expr FGE expr                  { Binop(":>=", $1, $3) }
+    | expr FLE expr                  { Binop(":<=", $1, $3) }
+    | expr FSEQ expr                 { Binop(":==", $1, $3) }
+    | expr FSNE expr                 { Binop(":!=", $1, $3) }
+         
     | expr AND expr                 { Binop("&&", $1, $3) }
     | expr OR expr                  { Binop("||", $1, $3) }
     | expr BINAND expr              { Binop("&", $1, $3) }

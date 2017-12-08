@@ -102,7 +102,13 @@ and exprs e =
   | [Vector(a, b)] -> "vec2f(" ^ (exprs [a]) ^ ", " ^ (exprs [b]) ^ ")"
   | [Leftvalue(a)] -> print_leftvalue a
   | [Binop(op, e1, e2)] ->
-     "(" ^ (exprs [e1]) ^ " " ^ op ^ " " ^ (exprs [e2]) ^ ")"
+     if (is_first_op op) then
+       "("
+       ^ ("!(_last->" ^ (exprs [e1]) ^ " " ^ (remove_first_op op) ^ " " ^ (exprs [e2]) ^ ")")
+       ^ "&&"
+       ^ ("(" ^ (exprs [e1]) ^ " " ^ (remove_first_op op) ^ " " ^ (exprs [e2]) ^ ")")
+       ^ ")"
+     else "(" ^ (exprs [e1]) ^ " " ^ op ^ " " ^ (exprs [e2]) ^ ")"
   | [Unop(op, e)] ->
      "(" ^ op ^ (exprs [e]) ^ ")"
   | [Call(identifier, identifiers)] ->

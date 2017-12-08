@@ -55,8 +55,9 @@ public:
 
     }
     void _step(double _tim, double _dtim, _Agent* _last_Agent) {
+        _Ball* _last = (_Ball*)_last_Agent;
         pos = vec2f(0., (10 - ((_tim * _tim) * 4.9)));
-        vel = pos;
+        vel = (pos - (_last->pos));
     }
     void _copy_from(_Agent *_from_Agent){
         _Ball* _from = (_Ball*)_from_Agent;

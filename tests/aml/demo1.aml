@@ -17,7 +17,7 @@ Agent Ball{
     }
     void step(){
         pos = vec2f(0.0, 10 - _tim * _tim * 4.9);
-        vel = pos;
+        vel = pos';
     }
 };
 

@@ -1,15 +1,39 @@
-open Ast
 
+open Ast
+open Printf
+
+let remove_diff x =
+  let len = String.length x
+  in
+  if (x.[len - 1] = '\'') then (String.sub x 0 (len - 1))
+  else x
+
+let is_diff x =
+  x != (remove_diff x)
+  
+let rec gather_diff list = function
+    Assign(l, Leftvalue(Identifier e)) ->
+    if(is_diff e) then (remove_diff e) :: list
+    else list
+  | Stmts(h :: t) -> gather_diff (gather_diff list h) (Stmts t)
+  | x -> list       
+       
 let rec pre_agent_fun indentifier = function
     Function(t, "step", identifiers, stmt) ->
-    Function(t, "_step", [String("double _tim, double _dtim, _Agent* _last_Agent")], stmt)
+    (
+      let _stmt = Stmts([
+                           Expr(String("_" ^ indentifier ^"* _last = (_" ^ indentifier ^ "*)_last_Agent;"));
+                           stmt;
+                         ])            
+      in Function(t, "_step", [String("double _tim, double _dtim, _Agent* _last_Agent")], _stmt)
+    )
   | Function(t, "plot", identifiers, stmt) ->
      let _stmt = Stmts([
                           stmt;
                           Expr(String("glFlush();\n"));
                       ])
-               in Function(t, "_plot", [String("double _tim, double _dtim")],              
-                           _stmt)
+     in Function(t, "_plot", [String("double _tim, double _dtim")],              
+                 _stmt)
   | Function(t, identifier, identifiers, stmt) ->
      Function(t, "_" ^ identifier, identifiers, stmt)
   | x -> x

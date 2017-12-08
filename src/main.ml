@@ -9,7 +9,11 @@ let rec print_ind ind str=
   else str;;  
   
 let rec print_leftvalue = function
-  | Identifier(x) -> x;
+  | Identifier(x) ->
+     if (is_diff x) then
+       let _x = (remove_diff x) in
+       ("(" ^ _x ^ " - (_last->" ^ _x ^ "))")
+     else x
   | TypeIdentifier(Builtintype(t), x) -> t ^ " " ^ x;;
 
 let rec print_stmt ind e =

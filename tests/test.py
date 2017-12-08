@@ -1,7 +1,7 @@
 import os
 
 tests = ["arith", "if", "loop", "variable", "comment", "function", "block", "vector"]
-tests_agent = ["agent"]
+tests_agent = ["demo1"]
 
 for test in tests:
     print(test + " test")

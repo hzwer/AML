@@ -47,12 +47,12 @@ public:
         _AML_Vertex2f(pos);
         _AML_Vertex2f((pos + ((vel * 0.1) / _dtim)));
         glEnd();
-        glFlush();
         glColor3f(1., 0., 0.);
         glBegin(GL_POINTS);
         _AML_Vertex2f(pos);
         glEnd();
         glFlush();
+
     }
     void _step(double _tim, double _dtim, _Agent* _last_Agent) {
         pos = vec2f(0., (10 - ((_tim * _tim) * 4.9)));

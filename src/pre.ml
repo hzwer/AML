@@ -4,7 +4,12 @@ let rec pre_agent_fun indentifier = function
     Function(t, "step", identifiers, stmt) ->
     Function(t, "_step", [String("double _tim, double _dtim, _Agent* _last_Agent")], stmt)
   | Function(t, "plot", identifiers, stmt) ->
-     Function(t, "_plot", [String("double _tim, double _dtim")], stmt)
+     let _stmt = Stmts([
+                          stmt;
+                          Expr(String("glFlush();\n"));
+                      ])
+               in Function(t, "_plot", [String("double _tim, double _dtim")],              
+                           _stmt)
   | Function(t, identifier, identifiers, stmt) ->
      Function(t, "_" ^ identifier, identifiers, stmt)
   | x -> x

@@ -38,6 +38,9 @@ public:
 const Float _PI=acos(-1.0);
 class angle{//[-PI,PI]
 private:
+public:
+    vec2f p;
+    angle(){}
     angle(vec2f r){
         p=r/sqrt(r._sqrlen());
     }
@@ -45,9 +48,6 @@ private:
         vec2f r(_x,_y);
         p=r/sqrt(r._sqrlen());
     }
-public:
-    vec2f p;
-    angle(){}
     angle(Float r){
         p=vec2f(cos(r),sin(r));
     }

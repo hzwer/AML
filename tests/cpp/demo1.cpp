@@ -34,12 +34,12 @@ public:
     virtual void _step(double,double,_Agent*)=0;
     virtual void _copy_from(_Agent*)=0;
 };
-class _Ball: public _Agent{
+class Ball: public _Agent{
 public:
     vec2f pos;
     vec2f vel;
-     _Ball() {
-        pos = vec2f(0, 10);
+     Ball(int _x, int _y) {
+        pos = vec2f(_x, _y);
     }
     void _plot(double _tim, double _dtim) {
         glColor3f(1., 1., 1.);
@@ -55,14 +55,14 @@ public:
 
     }
     void _step(double _tim, double _dtim, _Agent* _last_Agent) {
-        _Ball* _last = (_Ball*)_last_Agent;
-        pos = vec2f(0., (10 - ((_tim * _tim) * 4.9)));
+        Ball* _last = (Ball*)_last_Agent;
+        pos = vec2f(pos.x, (10 - ((_tim * _tim) * 4.9)));
         /* free fall*/
         vel = (pos - (_last->pos));
         /* first order difference*/
     }
     void _copy_from(_Agent *_from_Agent){
-        _Ball* _from = (_Ball*)_from_Agent;
+        Ball* _from = (Ball*)_from_Agent;
         *this = *_from;
     }
 };
@@ -94,10 +94,18 @@ int main(int argc, char *argv[]) {
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(500, 500);
     int glut_window = glutCreateWindow("AML");
-    _Agent *sp1 = new _Ball;
-    _Agent *sp2 = new _Ball;
-    *sp2 = *sp1;
-    _agents.push_back(make_pair(sp2,sp1));
+    _Agent *_Agent3 = new Ball(-5, 10);
+    _Agent *__Agent3 = new Ball(-5, 10);
+    *__Agent3 = *_Agent3;
+    _agents.push_back(make_pair(__Agent3, _Agent3));
+    _Agent *_Agent2 = new Ball(0, 10);
+    _Agent *__Agent2 = new Ball(0, 10);
+    *__Agent2 = *_Agent2;
+    _agents.push_back(make_pair(__Agent2, _Agent2));
+    _Agent *_Agent1 = new Ball(5, 10);
+    _Agent *__Agent1 = new Ball(5, 10);
+    *__Agent1 = *_Agent1;
+    _agents.push_back(make_pair(__Agent1, _Agent1));
     glutDisplayFunc(&_Plot);
     glutTimerFunc(1000/_FPS, _Step_Time, 1);
     glutMainLoop();

@@ -31,7 +31,7 @@ let rec pre_agent_fun indentifier = function
     Function(t, "step", identifiers, stmt) ->
     (
       let _stmt = Stmts([
-                           Expr(String("_" ^ indentifier ^"* _last = (_" ^ indentifier ^ "*)_last_Agent;"));
+                           Expr(String(indentifier ^"* _last = (" ^ indentifier ^ "*)_last_Agent;"));
                            stmt;
                          ])            
       in Function(t, "_step", [String("double _tim, double _dtim, _Agent* _last_Agent")], _stmt)
@@ -44,7 +44,7 @@ let rec pre_agent_fun indentifier = function
      in Function(t, "_plot", [String("double _tim, double _dtim")],              
                  _stmt)
   | Function(t, identifier, identifiers, stmt) ->
-     Function(t, "_" ^ identifier, identifiers, stmt)
+     Function(t, identifier, identifiers, stmt)
   | x -> x
        
 let pre_agent = function
@@ -53,12 +53,12 @@ let pre_agent = function
                           (List.map (pre_agent_fun identifier) stmt);
                           [
                             Expr(String("void _copy_from(_Agent *_from_Agent){
-        _" ^ identifier ^"* _from = (_" ^ identifier ^"*)_from_Agent;
+        " ^ identifier ^"* _from = (" ^ identifier ^"*)_from_Agent;
         *this = *_from;
     }"))
                      ]])
-    in Agent("_" ^ identifier, _stmt)
-  | x -> x;;
+    in _stmt
+  | other -> Stmts([Expr(String("fault"))])
 
 let pre_main = function
     Function(t, identifier, identifiers, stmt) ->
@@ -100,12 +100,3 @@ void _Step_Time(int _time_value){
   in
   Stmts([prev; Function(Builtintype("int"), "main", [String("int argc, char *argv[]")], _stmt)])
   | x -> x;;
-    
-let register = function
-    [Leftvalue(Identifier(x))] -> Stmts([
-         Expr(String("_Agent *sp1 = new _" ^ x ^ ";"));
-         Expr(String("_Agent *sp2 = new _" ^ x ^ ";"));
-         Expr(String("*sp2 = *sp1;"));
-         Expr(String("_agents.push_back(make_pair(sp2,sp1));"));
-     ])
-  | x -> Stmts([Expr(String("fault"))]);;

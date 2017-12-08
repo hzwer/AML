@@ -34,13 +34,13 @@ public:
     virtual void _step(double,double,_Agent*)=0;
     virtual void _copy_from(_Agent*)=0;
 };
-class _Blinker: public _Agent{
+class Blinker: public _Agent{
 public:
     angle theta;
     vec2f pos;
     int color;
     double PI;
-     _Blinker() {
+     Blinker() {
         theta = 0;
         color = 0;
         PI = acos(-1.);
@@ -64,7 +64,7 @@ public:
 
     }
     void _step(double _tim, double _dtim, _Agent* _last_Agent) {
-        _Blinker* _last = (_Blinker*)_last_Agent;
+        Blinker* _last = (Blinker*)_last_Agent;
         double dlt = (((_dtim / 10) * 2) * PI);
         theta = (theta + dlt);
         pos = (vec2f(cos(theta), sin(theta)) * 5);
@@ -74,7 +74,7 @@ public:
         }
     }
     void _copy_from(_Agent *_from_Agent){
-        _Blinker* _from = (_Blinker*)_from_Agent;
+        Blinker* _from = (Blinker*)_from_Agent;
         *this = *_from;
     }
 };
@@ -106,10 +106,10 @@ int main(int argc, char *argv[]) {
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(500, 500);
     int glut_window = glutCreateWindow("AML");
-    _Agent *sp1 = new _Blinker;
-    _Agent *sp2 = new _Blinker;
-    *sp2 = *sp1;
-    _agents.push_back(make_pair(sp2,sp1));
+    _Agent *_Agent1 = new Blinker();
+    _Agent *__Agent1 = new Blinker();
+    *__Agent1 = *_Agent1;
+    _agents.push_back(make_pair(__Agent1, _Agent1));
     glutDisplayFunc(&_Plot);
     glutTimerFunc(1000/_FPS, _Step_Time, 1);
     glutMainLoop();

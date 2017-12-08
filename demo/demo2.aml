@@ -34,5 +34,5 @@ Agent Blinker{
 }
 };
 project(){
-    register(Blinker);
+    register(Blinker());
 }

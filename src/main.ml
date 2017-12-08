@@ -4,6 +4,8 @@ open Pre
    
 exception Invalid_input;;
 
+let my_cnt = ref 0;;
+  
 let rec print_ind ind str= 
   if (ind > 0) then (("    ") ^ (print_ind (ind - 1) str))
   else str;;  
@@ -15,14 +17,16 @@ let rec print_leftvalue = function
        ("(" ^ _x ^ " - (_last->" ^ _x ^ "))")
      else x
   | TypeIdentifier(Builtintype(t), x) -> t ^ " " ^ x;;
-
-let rec print_stmt ind e =
+  
+let rec print_stmt ind e =  
   match e with
   | [] -> ""
   | [Empty] -> ";\n"
              
-  | [Expr(Call("register", identifiers))] ->
-     (print_stmt ind [register identifiers])
+  | [Expr(Call("register", identifiers))] -> (
+    my_cnt := !my_cnt + 1;
+    (print_stmt ind [register identifiers])
+  )
 
   | [Expr(Call("plotvec2f", identifiers))] ->
      (print_stmt ind [Expr(Call("_AML_Vertex2f", identifiers))])
@@ -84,7 +88,17 @@ let rec print_stmt ind e =
   | [Stmts(x)] -> print_stmt ind x;
   | h :: t -> (print_stmt ind [h])
               ^ (print_stmt ind t)            
-  
+            
+and register e =
+  match e with
+    [con] -> (let x = ("_Agent" ^ (string_of_int !my_cnt)) in Stmts([
+        Expr(String("_Agent *" ^ x ^" = new " ^ (exprs [con]) ^ ";"));
+        Expr(String("_Agent *_" ^ x ^" = new " ^ (exprs [con]) ^ ";"));
+        Expr(String("*_" ^ x ^" = *" ^ x ^ ";"));
+        Expr(String("_agents.push_back(make_pair(_" ^ x ^ ", " ^ x ^ "));"));
+             ]))             
+  | other -> Stmts([Expr(String("fault"))])
+            
 and print_cout e =
   match e with
    | [] -> "\"\""
@@ -131,18 +145,14 @@ and print_assign e =
   | other -> "fault";;             
   
 let rec print_toplevel = function
+  | Stmt(x) -> printf "%s" (print_stmt 0 [x])
   | Agent(identifier, stmt) ->
-     if identifier.[0] = '_' then (
-       printf "class %s: public _Agent{\n" identifier;
-       printf "public:\n";
-       printf "%s" (print_stmt 1 [stmt]);
-       printf("};\n")
-     )
-     else (
-       print_toplevel(pre_agent(Agent(identifier, stmt)));
-     )
-  | Stmt(x) -> printf "%s" (print_stmt 0 [x]);;
-
+     let x = pre_agent(Agent(identifier, stmt)) in 
+     printf "class %s: public _Agent{\n" identifier;
+     printf "public:\n";
+     printf "%s" (print_stmt 1 [x]);
+     printf("};\n");;
+  
 let rec print_t = function
   | [] -> printf("")
   | [x] -> print_toplevel x;

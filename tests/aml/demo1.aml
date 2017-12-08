@@ -1,8 +1,8 @@
 Agent Ball{
     vec2f pos;
     vec2f vel;
-    Ball(){
-        pos = vec2f(0, 10);
+    Ball(int _x, int _y){
+        pos = vec2f(_x, _y);
     }
     void plot(){
         glColor3f(1.0, 1.0, 1.0);
@@ -16,11 +16,13 @@ Agent Ball{
         glEnd();
     }
     void step(){
-        pos = vec2f(0.0, 10 - _tim * _tim * 4.9); // free fall
+        pos = vec2f(pos.x, 10 - _tim * _tim * 4.9); // free fall
         vel = pos'; // first order difference
     }
 };
 
 project(){
-    register(Ball);
+    register(Ball(-5, 10));
+    register(Ball(0, 10));
+    register(Ball(5, 10));
 }

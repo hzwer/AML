@@ -47,3 +47,5 @@ cglib.h
 geolib.h
 
 *.cpp#
+
+*.gch

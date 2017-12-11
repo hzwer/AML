@@ -31,7 +31,7 @@ public:
     Float operator * (const vec3f &b){return x*b.x+y*b.y+z*b.z;}
     vec3f operator * (Float b){return vec3f(x*b,y*b,z*b);}
     vec3f operator / (Float b){return vec3f(x/b,y/b,z/b);}
-    Float _sqrlen(void){return x*x+y*y;}
+    Float _sqrlen(void){return x*x+y*y+z*z;}
     vec3f _crossprd(const vec3f &b){return vec3f(y*b.z-z*b.y,z*b.x-x*b.z,x*b.y-y*b.x);}
 };
 

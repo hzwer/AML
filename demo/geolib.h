@@ -31,16 +31,13 @@ public:
     Float operator * (const vec3f &b){return x*b.x+y*b.y+z*b.z;}
     vec3f operator * (Float b){return vec3f(x*b,y*b,z*b);}
     vec3f operator / (Float b){return vec3f(x/b,y/b,z/b);}
-    Float _sqrlen(void){return x*x+y*y;}
+    Float _sqrlen(void){return x*x+y*y+z*z;}
     vec3f _crossprd(const vec3f &b){return vec3f(y*b.z-z*b.y,z*b.x-x*b.z,x*b.y-y*b.x);}
 };
 
 const Float _PI=acos(-1.0);
 class angle{//[-PI,PI]
 private:
-public:
-    vec2f p;
-    angle(){}
     angle(vec2f r){
         p=r/sqrt(r._sqrlen());
     }
@@ -48,6 +45,9 @@ public:
         vec2f r(_x,_y);
         p=r/sqrt(r._sqrlen());
     }
+public:
+    vec2f p;
+    angle(){}
     angle(Float r){
         p=vec2f(cos(r),sin(r));
     }

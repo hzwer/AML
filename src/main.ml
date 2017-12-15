@@ -3,8 +3,6 @@ open Printf
 open Pre
    
 exception Invalid_input;;
-
-let my_cnt = ref 0;;
   
 let rec print_ind ind str= 
   if (ind > 0) then (("    ") ^ (print_ind (ind - 1) str))
@@ -24,7 +22,6 @@ let rec print_stmt ind e =
   | [Empty] -> ";\n"
              
   | [Expr(Call("register", identifiers))] -> (
-    my_cnt := !my_cnt + 1;
     (print_stmt ind [register identifiers])
   )
 
@@ -91,12 +88,11 @@ let rec print_stmt ind e =
             
 and register e =
   match e with
-    [con] -> (let x = ("_Agent" ^ (string_of_int !my_cnt)) in Stmts([
-        Expr(String("_Agent *" ^ x ^" = new " ^ (exprs [con]) ^ ";"));
-        Expr(String("_Agent *_" ^ x ^" = new " ^ (exprs [con]) ^ ";"));
-        Expr(String("*_" ^ x ^" = *" ^ x ^ ";"));
-        Expr(String("_agents.push_back(make_pair(_" ^ x ^ ", " ^ x ^ "));"));
-             ]))             
+    [con] -> Stmts([
+        Expr(String("_Agent1 = new " ^ (exprs [con]) ^ ";"));
+        Expr(String("_Agent2 = new " ^ (exprs [con]) ^ ";"));        
+        Expr(String("_agents.push_back(make_pair((_Agent*)_Agent1, (_Agent*)_Agent2));"));
+             ])
   | other -> Stmts([Expr(String("fault"))])
             
 and print_cout e =

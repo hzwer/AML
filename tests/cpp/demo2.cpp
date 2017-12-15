@@ -40,8 +40,8 @@ public:
     vec2f pos;
     int color;
     double PI;
-     Blinker() {
-        theta = 0;
+     Blinker(angle _theta) {
+        theta = _theta;
         color = 0;
         PI = acos(-1.);
     }
@@ -106,10 +106,12 @@ int main(int argc, char *argv[]) {
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(500, 500);
     int glut_window = glutCreateWindow("AML");
-    _Agent *_Agent1 = new Blinker();
-    _Agent *__Agent1 = new Blinker();
-    *__Agent1 = *_Agent1;
-    _agents.push_back(make_pair(__Agent1, _Agent1));
+    void *_Agent1, *_Agent2;
+    for(int i = 1; (i <= 10); i = (i + 1)) {
+        _Agent1 = new Blinker(angle(((i * acos(-1.)) / 5)));
+        _Agent2 = new Blinker(angle(((i * acos(-1.)) / 5)));
+        _agents.push_back(make_pair((_Agent*)_Agent1, (_Agent*)_Agent2));
+    }
     glutDisplayFunc(&_Plot);
     glutTimerFunc(1000/_FPS, _Step_Time, 1);
     glutMainLoop();

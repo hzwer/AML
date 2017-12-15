@@ -68,7 +68,8 @@ let pre_main = function
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(500, 500);
-    int glut_window = glutCreateWindow(\"AML\");"));
+    int glut_window = glutCreateWindow(\"AML\");
+    void *_Agent1, *_Agent2;"));
          stmt;
          Expr(String("glutDisplayFunc(&_Plot);
     glutTimerFunc(1000/_FPS, _Step_Time, 1);

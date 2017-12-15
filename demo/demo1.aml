@@ -22,7 +22,6 @@ Agent Ball{
 };
 
 project(){
-    register(Ball(-5, 10));
-    register(Ball(0, 10));
-    register(Ball(5, 10));
+    for(int i = 1; i <= 5; i = i + 1)
+        register(Ball(-12 + 4 * i, 10));
 }

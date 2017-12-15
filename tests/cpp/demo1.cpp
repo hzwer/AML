@@ -94,18 +94,12 @@ int main(int argc, char *argv[]) {
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(500, 500);
     int glut_window = glutCreateWindow("AML");
-    _Agent *_Agent3 = new Ball(-5, 10);
-    _Agent *__Agent3 = new Ball(-5, 10);
-    *__Agent3 = *_Agent3;
-    _agents.push_back(make_pair(__Agent3, _Agent3));
-    _Agent *_Agent2 = new Ball(0, 10);
-    _Agent *__Agent2 = new Ball(0, 10);
-    *__Agent2 = *_Agent2;
-    _agents.push_back(make_pair(__Agent2, _Agent2));
-    _Agent *_Agent1 = new Ball(5, 10);
-    _Agent *__Agent1 = new Ball(5, 10);
-    *__Agent1 = *_Agent1;
-    _agents.push_back(make_pair(__Agent1, _Agent1));
+    void *_Agent1, *_Agent2;
+    for(int i = 1; (i <= 5); i = (i + 1)) {
+        _Agent1 = new Ball((-12 + (4 * i)), 10);
+        _Agent2 = new Ball((-12 + (4 * i)), 10);
+        _agents.push_back(make_pair((_Agent*)_Agent1, (_Agent*)_Agent2));
+    }
     glutDisplayFunc(&_Plot);
     glutTimerFunc(1000/_FPS, _Step_Time, 1);
     glutMainLoop();

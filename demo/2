@@ -39,104 +39,30 @@ public:
 template<typename T>
 vector<T*> _Global_Filter(bool (*f)(_Agent*));
 
-int PH=50,PW=50;
+int PH=100,PW=100;
 double L=1;
 const double eps=1e-10;
 int facenum;
 vec3f *xyzs;//length=3*facenum
-vec3f *ambients;//length=facenum
-vec3f *diffuses;//length=facenum
-vec3f *speculars;//length=facenum
-double *shininesses;//length=facenum
-int lightnum;
-vec3f *lightxyzs;//length=lightnum
-vec3f *lightrgbs;//length=lightnum
+double *rgbs;//length=3*facenum
 void print(vec3f p){
     cout<<"("<<p.x<<","<<p.y<<","<<p.z<<")";
 }
 void read(char *filename){
-    FILE *fin = fopen(filename,"r");
-    fscanf(fin,"%d%d",&facenum,&lightnum);
+    freopen(filename,"r",stdin);
+    scanf("%d",&facenum);
     xyzs=new vec3f[3*facenum];
-    ambients=new vec3f[facenum];
-    diffuses=new vec3f[facenum];
-    speculars=new vec3f[facenum];
-    shininesses=new double[facenum];
-    vec3f now_ambient=vec3f(0,0,0);
-    vec3f now_diffuse=vec3f(0,0,0);
-    vec3f now_specular=vec3f(0,0,0);
-    double now_shininess=0;
-    lightxyzs=new vec3f[lightnum];
-    lightrgbs=new vec3f[lightnum];
-    vec3f now_xyz=vec3f(0,0,0);
-    vec3f now_rgb=vec3f(0,0,0);
-    int face_cnt=0,light_cnt=0;
-    char buf[50];
-    while(true){
-        if(fscanf(fin,"%s",buf)==EOF) break;
-        string cmd=string(buf);
-        if(cmd=="face"){
-            for(int t=0;t<3;t++){
-                double x,y,z;
-                fscanf(fin,"%lf%lf%lf",&x,&y,&z);
-                xyzs[face_cnt*3+t]=vec3f(x,y,z);
-                ambients[face_cnt]=now_ambient;
-                diffuses[face_cnt]=now_diffuse;
-                speculars[face_cnt]=now_specular;
-                shininesses[face_cnt]=now_shininess;
-            }
-            face_cnt++;
-        }
-        else if(cmd=="ambient"){
-            fscanf(fin,"%lf%lf%lf",&now_ambient.x,&now_ambient.y,&now_ambient.z);
-        }
-        else if(cmd=="diffuse"){
-            fscanf(fin,"%lf%lf%lf",&now_diffuse.x,&now_diffuse.y,&now_diffuse.z);
-        }
-        else if(cmd=="specular"){
-            fscanf(fin,"%lf%lf%lf",&now_specular.x,&now_specular.y,&now_specular.z);
-        }
-        else if(cmd=="shininess"){
-            fscanf(fin,"%lf",&now_shininess);
-        }
-        else if(cmd=="light"){
+    rgbs=new double[3*facenum];
+    for(int i=0;i<facenum;i++){
+        for(int t=0;t<3;t++){
             double x,y,z;
-            fscanf(fin,"%lf%lf%lf",&x,&y,&z);
-            lightxyzs[light_cnt]=vec3f(x,y,z);
-            lightrgbs[light_cnt]=now_rgb;
+            scanf("%lf%lf%lf",&x,&y,&z);
+            xyzs[i*3+t]=vec3f(x,y,z);
         }
-        else if(cmd=="lightcol"){
-            double x,y,z;
-            fscanf(fin,"%lf%lf%lf",&x,&y,&z);
-            now_rgb=vec3f(x,y,z);
-        }
+        double r,g,b;
+        scanf("%lf%lf%lf",&rgbs[3*i+0],&rgbs[3*i+1],&rgbs[3*i+2]);
     }
-    fclose(fin);
 }
-
-vec3f normalize(vec3f p){
-    return p/p._len();
-}
-
-vec3f blinn_phong(vec3f look,vec3f pos,vec3f normal0,vec3f diffuse,vec3f specular,double shininess, vec3f lightpos,vec3f lightcol){
-	//位置pos,位置向眼睛的方向是look(look已单位化),法向normal(已单位化),物体O,光源light
-	vec3f normal=normalize(normal0);
-	vec3f L=lightpos-pos;//光源方向
-    double L_len=L._len();
-	double atten=1.0/(1.0+0.1*L_len+0.05*L_len*L_len);//衰减率
-    L=L/L_len;
-	vec3f lambert,reflect;//漫射光和反射光
-	vec3f H=normalize(L+look);
-    double NL=normal*L,NH=normal*H;
-    lambert.x=diffuse.x*atten*lightcol.x*max(NL,0.0);
-    lambert.y=diffuse.y*atten*lightcol.y*max(NL,0.0);
-    lambert.z=diffuse.z*atten*lightcol.z*max(NL,0.0);
-    reflect.x=specular.x*atten*lightcol.x*pow(max(NH,0.0),shininess);
-    reflect.y=specular.y*atten*lightcol.y*pow(max(NH,0.0),shininess);
-    reflect.z=specular.z*atten*lightcol.z*pow(max(NH,0.0),shininess);
-    return reflect+lambert;
-}
-
 bool ray_triangle_intersection(vec3f P0,vec3f P1,vec3f a,vec3f b,vec3f c,double &t,vec3f &normal){
 	//射线方程为P=P0+t*P1,三角形为abc,交点重心分解为alpha*a+beta*b+gamma*c
     //print(P0);print(P1);cout<<endl;print(a);print(b);print(c);cout<<endl;
@@ -149,7 +75,7 @@ bool ray_triangle_intersection(vec3f P0,vec3f P1,vec3f a,vec3f b,vec3f c,double 
 	double gamma=(Y*P1)/k;
 	double alpha=1-beta-gamma;
 	if(t<eps) return false;
-    //cout<<t<<" "<<beta<<" "<<gamma<<" "<<alpha<<endl;
+    cout<<t<<" "<<beta<<" "<<gamma<<" "<<alpha<<endl;
 	if(alpha<-eps) return false;
 	if(beta<-eps) return false;
 	if(gamma<-eps) return false;
@@ -157,9 +83,10 @@ bool ray_triangle_intersection(vec3f P0,vec3f P1,vec3f a,vec3f b,vec3f c,double 
 	return true;
 }
 
-int find_hit(vec3f pos,vec3f dir,double &hit_t,vec3f &normal){
+int find_hit(vec3f pos,vec3f dir,double &hit_t){
     int k=-1;hit_t=1e15;
     double t;
+    vec3f normal;
     for(int i=0;i<facenum;i++){
         if(ray_triangle_intersection(pos,dir,xyzs[3*i+0],xyzs[3*i+1],xyzs[3*i+2],t,normal)){
             if(t>0){
@@ -173,31 +100,20 @@ int find_hit(vec3f pos,vec3f dir,double &hit_t,vec3f &normal){
     return k;
 }
 
-bool light_visible(vec3f p,vec3f light){
-    vec3f pos=p;
-    vec3f dir=light-p;
-    double t;
-    vec3f normal;
-    if(find_hit(pos,dir,t,normal)){
-        if(t+eps<1.0) return false;
-    }
-    return true;
-}
-
 class _Ray: public _Agent{
 public:
     vec2f pixel;
     vec3f pos;
     vec3f dir;//it must be normalized
-    vec3f color_sum;
+    vec3f color;
     _Ray(vec2f o, vec3f p,vec3f d){
         pixel=o;
         pos=p;
         dir=d;
-        color_sum=vec3f(0,0,0);
+        color=vec3f(0,0,0);
     }
     void _plot(double _tim,double _dt){
-        glColor3f(color_sum.x,color_sum.y,color_sum.z);
+        glColor3f(color.x,color.y,color.z);
         glBegin(GL_POINTS);
         _AML_Vertex2f(pixel);
         glEnd();
@@ -206,28 +122,13 @@ public:
     void _step(double _tim,double _dt,_Agent* _last_Agent){
         _Ray* _last=(_Ray*)_last_Agent;
         int k;double t;
-        vec3f normal;
-        k=find_hit(pos,dir,t,normal);
-        vec3f color;
+        k=find_hit(pos,dir,t);
         if(k==-1){
             color=vec3f(0,0,0);
         }
         else{
-            vec3f hit_p=pos+dir*t;
-            vec3f look=normalize(dir*(-1.0));
-            vec3f n=normalize(normal);
-            color=ambients[k];
-            for(int i=0;i<lightnum;i++){
-                if(light_visible(hit_p,lightxyzs[i])){
-                    color=color+blinn_phong(look,hit_p,n,diffuses[k],speculars[k],shininesses[k],lightxyzs[i],lightrgbs[i]);
-                }
-            }
-            vec3f rf=n*2-look;
-            vec3f dir1=rf-hit_p;
-            pos=hit_p;
-            dir=dir1;
+            color=vec3f(rgbs[3*k+0],rgbs[3*k+1],rgbs[3*k+2]);
         }
-        color_sum=color_sum+color;
     }
     void _copy_from(_Agent* _from_Agent){
         _Ray* _from=(_Ray*)_from_Agent;
@@ -253,9 +154,6 @@ void _Plot(void){
         _agents[i].second->_plot(_cur_tim, _dt);
     }
     glutSwapBuffers();
-    printf("enter to continue:");
-    getchar();
-    printf("go\n");
 }
 void _Step_Time(int _time_value){
     //printf("step time: %d\n",_time_value);
@@ -264,6 +162,7 @@ void _Step_Time(int _time_value){
         _agents[i].first->_copy_from(_agents[i].second);
     }
     _cur_tim+=_dt;
+    getchar();
     glutPostRedisplay();
     glutTimerFunc(1000/_FPS, _Step_Time, 1);
 }
@@ -275,7 +174,7 @@ int main(int argc, char *argv[]){
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);//double buffer
     //todo: user shall be able to designate these things in AML
     glutInitWindowPosition(100, 100);
-    glutInitWindowSize(50,50); 
+    glutInitWindowSize(100, 100); 
     int glut_window = glutCreateWindow("AML");
     //end todo
     _Set_Map_XY(2*L,2*L);

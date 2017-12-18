@@ -19,6 +19,7 @@ public:
     vec2f operator * (Float b){return vec2f(x*b,y*b);}
     vec2f operator / (Float b){return vec2f(x/b,y/b);}
     Float _sqrlen(void){return x*x+y*y;}
+    Float _len(void){return sqrt(_sqrlen());}
     Float _crossprd(const vec2f &b){return x*b.y-b.x*y;}
 };
 class vec3f{
@@ -32,6 +33,7 @@ public:
     vec3f operator * (Float b){return vec3f(x*b,y*b,z*b);}
     vec3f operator / (Float b){return vec3f(x/b,y/b,z/b);}
     Float _sqrlen(void){return x*x+y*y+z*z;}
+    Float _len(void){return sqrt(_sqrlen());}
     vec3f _crossprd(const vec3f &b){return vec3f(y*b.z-z*b.y,z*b.x-x*b.z,x*b.y-y*b.x);}
 };
 

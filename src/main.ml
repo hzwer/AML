@@ -95,11 +95,11 @@ and register e =
              ])
   | other -> Stmts([Expr(String("fault"))])
             
-and print_cout e =
+and print_io str e =
   match e with
    | [] -> "\"\""
    | [x] -> exprs [x]
-   | h :: t -> (exprs [h]) ^ " <<' '<< " ^ (print_cout t)
+   | h :: t -> (exprs [h]) ^ " " ^ str ^ "' '" ^ str ^ " " ^ (print_io str t)
              
 and exprs e =
   match e with
@@ -128,7 +128,9 @@ and exprs e =
           else ("(" ^ (exprs identifiers) ^ ")")
      ))          
   | [Println(exprs)] ->
-     "cout << " ^ print_cout exprs ^ " << endl"
+     "cout << " ^ print_io "<<" exprs ^ " << endl"
+  | [Read(exprs)] ->
+     "cin >> " ^ print_io ">>" exprs ^ " >> endl"
   | h :: t -> (exprs [h]) ^ ", " ^ (exprs t)
   
 and print_type e = 

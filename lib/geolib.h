@@ -15,6 +15,7 @@ public:
     vec2f(Float _x,Float _y):x(_x),y(_y){}
     vec2f operator + (const vec2f &b){return vec2f(x+b.x,y+b.y);}
     vec2f operator - (const vec2f &b){return vec2f(x-b.x,y-b.y);}
+    vec2f operator - (){return vec2f(-x,-y);}
     Float operator * (const vec2f &b){return x*b.x+y*b.y;}
     vec2f operator * (Float b){return vec2f(x*b,y*b);}
     vec2f operator / (Float b){return vec2f(x/b,y/b);}

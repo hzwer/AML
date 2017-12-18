@@ -1,0 +1,12 @@
+int main()
+{
+    int a;
+    int b;
+    read(a);
+    read(b);
+    println(a);
+    println(b);
+    read(a, b);
+    println(a, b);
+    return(0);
+}

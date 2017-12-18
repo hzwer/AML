@@ -34,6 +34,7 @@ rule token =
   | "true"         { BOOL (true) }
   | "false"        { BOOL (false) }
   | "println"      { PRINTLN }
+  | "read"         { READ }
   | int            { INT (int_of_string (Lexing.lexeme lexbuf)) }
   | float          { FLOAT (float_of_string (Lexing.lexeme lexbuf)) }
   | string         { STRING (Lexing.lexeme lexbuf) }

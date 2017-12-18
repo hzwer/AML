@@ -119,6 +119,7 @@ vec3f normalize(vec3f p){
 }
 
 vec3f blinn_phong(vec3f look,vec3f pos,vec3f normal0,vec3f diffuse,vec3f specular,double shininess, vec3f lightpos,vec3f lightcol){
+    cout<<"calc phong\n";
 	//位置pos,位置向眼睛的方向是look(look已单位化),法向normal(已单位化),物体O,光源light
 	vec3f normal=normalize(normal0);
 	vec3f L=lightpos-pos;//光源方向
@@ -204,6 +205,7 @@ public:
         glFlush();
     }
     void _step(double _tim,double _dt,_Agent* _last_Agent){
+        //print(pos);print(dir);
         _Ray* _last=(_Ray*)_last_Agent;
         int k;double t;
         vec3f normal;
@@ -222,12 +224,14 @@ public:
                     color=color+blinn_phong(look,hit_p,n,diffuses[k],speculars[k],shininesses[k],lightxyzs[i],lightrgbs[i]);
                 }
             }
+            //cout<<"n: ";print(n);
             vec3f rf=n*2-look;
             vec3f dir1=rf-hit_p;
             pos=hit_p;
             dir=dir1;
         }
         color_sum=color_sum+color;
+        //print(pos);print(dir);
     }
     void _copy_from(_Agent* _from_Agent){
         _Ray* _from=(_Ray*)_from_Agent;

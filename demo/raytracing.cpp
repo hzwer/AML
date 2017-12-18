@@ -39,14 +39,30 @@ public:
 template<typename T>
 vector<T*> _Global_Filter(bool (*f)(_Agent*));
 
+int PH=500,PW=500;
+double L=1;
 const double eps=-1e10;
 int facenum;
-vec3 *xyzs;//length=3*facenum
+vec3f *xyzs;//length=3*facenum
 double *rgbs;//length=3*facenum
-bool ray_triangle_intersection(vec3 P0,vec3 P1,vec3 a,vec3 b,vec3 c,double &t,vec3 &normal){
+void read(void){
+    scanf("%d",&facenum);
+    xyzs=new vec3f[3*facenum];
+    rgbs=new double[3*facenum];
+    for(int i=0;i<facenum;i++){
+        for(int t=0;t<3;t++){
+            double x,y,z;
+            scanf("%lf%lf%lf",&x,&y,&z);
+            xyzs[i*3+t]=vec3f(x,y,z);
+        }
+        double r,g,b;
+        scanf("%lf%lf%lf",&rgbs[3*i+0],&rgbs[3*i+1],&rgbs[3*i+2]);
+    }
+}
+bool ray_triangle_intersection(vec3f P0,vec3f P1,vec3f a,vec3f b,vec3f c,double &t,vec3f &normal){
 	//射线方程为P=P0+t*P1,三角形为abc,交点重心分解为alpha*a+beta*b+gamma*c
-	vec3 E1=b-a,E2=c-a,T=P0-a;
-	vec3 X=P1._crossprd(E2),Y=T._crossprd(E1);
+	vec3f E1=b-a,E2=c-a,T=P0-a;
+	vec3f X=P1._crossprd(E2),Y=T._crossprd(E1);
 	double k=X*E1;
 	if(fabs(k)<eps) return false;
 	t=(Y*E2)/k;
@@ -98,14 +114,14 @@ public:
         glFlush();
     }
     void _step(double _tim,double _dt,_Agent* _last_Agent){
-        _Ray* _last=(_Agent*)_last_Agent;
+        _Ray* _last=(_Ray*)_last_Agent;
         int k;double t;
         k=find_hit(pos,dir,t);
         if(k==-1){
             color=vec3f(0,0,0);
         }
         else{
-            color=vec3f(rgbx[3*k+0],rgbs[3*k+1],rgbs[3*k+2]);
+            color=vec3f(rgbs[3*k+0],rgbs[3*k+1],rgbs[3*k+2]);
         }
     }
     void _copy_from(_Agent* _from_Agent){
@@ -155,20 +171,20 @@ int main(int argc, char *argv[]){
     int glut_window = glutCreateWindow("AML");
     //end todo
     _Set_Map_XY(2*L,2*L);
-    double R=50;
-    for(int i=0;i<10;i++){
-        double deg=i*36.0;
-        double x=cos(deg)*R;
-        double y=sin(deg)*R;
-        _Agent *r=new _Runner(x,y,15+i,deg);
-        _Agent *_copy_r=new _Runner(x,y,15+i,deg);//our compiler just copy definition of r
-        *_copy_r=*r;
-        _agents.push_back(make_pair(_copy_r,r));
+    for(int i=0;i<PW;i++){
+        for(int j=0;j<PH;j++){
+            double x=-L+(i+0.5)*(2*L/PW);
+            double y=+L-(j+0.5)*(2*L/PH);
+            vec2f o(x,y);
+            vec3f p(0,0,-1);
+            vec3f d(x,y,1);
+            _Agent *r=new _Ray(o,p,d);
+            _Agent *_copy_r=new _Ray(o,p,d);
+            *_copy_r=*r;
+            _agents.push_back(make_pair(_copy_r,r));
+            
+        }
     }
-    _Agent *c=new _Chaser(1,0,5);
-    _Agent *_copy_c=new _Chaser(1,0,5);
-    *_copy_c=*c;
-    _agents.push_back(make_pair(_copy_c,c));
     glutDisplayFunc(&_Plot);
     glutTimerFunc(1000/_FPS, _Step_Time, 1);
     glutMainLoop();

@@ -25,6 +25,7 @@ and expr =
   | Binop of string * expr * expr
   | Call of (identifier * exprs)
   | Println of exprs
+  | Read of exprs
 
 and stmt =
   | Stmts of stmts

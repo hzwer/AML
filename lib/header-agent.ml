@@ -4,7 +4,7 @@
 double _FPS=60.0;
 // unit is "meter" for them
 double _MAP_X=20,_MAP_Y=20;
-vec2f _MAP_CENTER(0,0); // 5m
+vec2f _MAP_CENTER(0,0);
 double _SPEEDUP_RATE=1;
 
 //must allowed user-defination interfaces:

@@ -1,6 +1,6 @@
-# AML
+## Introduction
 
-Agent Manipulation Language (AML) is a simple programming languages that compiles to C. It support describing the behaviors of agents and the computation geometry.
+Agent Manipulation Language (AML) is a programming languages that compiles to C. It support describing the behaviors of agents and the computation geometry.
 
 AML is implemented in OCaml.There are some slides made by myself.
 
@@ -8,30 +8,33 @@ AML is implemented in OCaml.There are some slides made by myself.
 
 [Introduction to AML](https://drive.google.com/file/d/1BtA4K1q3Tp2fpJ_MfmQF-BdTkDTEem14/view?usp=sharing)
 
-Now it looks like an unfinished course homework, welcome to help us to make it better.
-
 ## How to get it
 
-## Build from source
+###Build from source
 
-1. install glut // for mac, Xcode bring the glut 
+1. install glut // for mac OS, Xcode bring the glut 
 2. opam install menhir
 3. clone with git
 4. make
-5. ./main.native [file]
+5. ./main.native [file] 
 
-## Test
+### Test
 
-make test
+```
+$ make test
+```
 
 ## Test things with openGL:
-cd lib
 
-g++ -o main demo_cpp_1.cpp -lglut -lGL // for ubuntu
+```
+$ cd demo
 
-g++ -framework OpenGL -framework GLUT -framework Foundation -o main demo_cpp_1.cpp // for mac OS
+$ g++ -o main demo1.cpp -lglut -lGL # for ubuntu
 
-./main
+$ g++ -framework OpenGL -framework GLUT -framework Foundation -o main demo1.cpp # for mac OS
+
+$ ./main
+```
 
 ## Syntax
 
@@ -90,6 +93,7 @@ int fibonacci(int num) {
 }
 ```
 ## Contributors
+
 * [hzwer](https://github.com/hzwer)
 
 * [wmdcstdio](https://github.com/wmdcstdio)

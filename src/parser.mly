@@ -17,6 +17,7 @@
 %token ELSE
 %token FOR
 %token MOD
+%token READ
 %token PRINTLN
 %token PLUS MINUS TIMES DIV
 %token LPAREN RPAREN
@@ -103,6 +104,7 @@
   call_stmt:
     | IDENTIFIER LPAREN expr_list RPAREN { Call($1, $3) }
     | PRINTLN LPAREN expr_list RPAREN { Println($3) }
+    | READ LPAREN expr_list RPAREN { Read($3) }
       
   if_stmt:
     | IF LPAREN expr RPAREN stmt

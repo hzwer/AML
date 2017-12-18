@@ -12,12 +12,10 @@ Agent Blinker{
         vec2f a=pos+vec2f(0,1);
         vec2f b=pos+vec2f(-0.866,-0.5);
         vec2f c=pos+vec2f(0.866,-0.5);
-        if(color==0){
+        if(color==0)
             glColor3f(1.0,0.0,0.0);
-        }
-        else{
+        else
             glColor3f(0.0,0.0,1.0);
-        }
         glBegin(GL_TRIANGLES);
         plotvec2f(a);
         plotvec2f(b);
@@ -31,7 +29,7 @@ Agent Blinker{
         if(theta :> angle(0)){ // operator :> means "when > holds true for the first time"
             color = color ^ 1;
         }
-}
+    }
 };
 project(){
     register(Blinker());

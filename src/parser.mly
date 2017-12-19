@@ -6,11 +6,6 @@
 %token <string> COMMENT
 %token <int> INT
 %token <bool> BOOL
-%token TINT
-%token TDOUBLE
-%token TSTRING
-%token TBOOL
-%token VOID
 %token IF
 %token ELSE
 %token FOR
@@ -76,23 +71,20 @@
   toplevel_list:
     | { [] }
     | toplevel toplevel_list      { $1 :: $2 }
-
-  leftvalue:
-    | IDENTIFIER                      { Identifier($1) }
-    | builtintype IDENTIFIER          { TypeIdentifier($1, $2) }
-      
+    
   expr:    
     | INT                           { Int($1) }
     | BOOL                          { Bool($1) }
     | STRING                        { String($1) }
     | FLOAT                         { Float($1) }
-    | leftvalue                     { Leftvalue($1) }
+    | IDENTIFIER                    { Identifier($1) }
     | LPAREN expr RPAREN            { $2 }
     | binary_op                     { $1 }
     | unary_op                      { $1 }
     | call_stmt                     { $1 }
-    | leftvalue EQUAL expr          { Assign($1, $3) }
     | expr QUESTION expr COLON expr { Ternary($1, $3, $5) }
+    | IDENTIFIER IDENTIFIER EQUAL expr { Assign($1, Binop("=", Identifier($2), $4)) }
+    | IDENTIFIER IDENTIFIER { Assign($1, Identifier($2)) }
 
   expr_list:
     | { [] }
@@ -124,21 +116,13 @@
     | for_stmt                             { $1 }
     | COMMENT                              { Comment($1) }
     | expr_list SEMICOLON                  { Exprs($1) }
-    | builtintype IDENTIFIER LPAREN expr_list RPAREN LBRACE stmt_list RBRACE      { Function($1, $2, $4, Stmts($7)) }
-    | IDENTIFIER LPAREN expr_list RPAREN LBRACE stmt_list RBRACE      { Function(Builtintype(""), $1, $3, Stmts($6)) }
+    | IDENTIFIER IDENTIFIER LPAREN expr_list RPAREN LBRACE stmt_list RBRACE      { Function($1, $2, $4, Stmts($7)) }
+    | IDENTIFIER LPAREN expr_list RPAREN LBRACE stmt_list RBRACE      { Function("", $1, $3, Stmts($6)) }
     | LBRACE stmt_list RBRACE              { Stmts($2) }
     
   stmt_list:
     | { [] }
-    | stmt stmt_list                       { $1 :: $2 }
-        
-  builtintype:
-    | TINT                          { Builtintype("int") }
-    | TDOUBLE                       { Builtintype("double") }
-    | TSTRING                       { Builtintype("string") }
-    | TBOOL                         { Builtintype("bool") }
-    | VOID                          { Builtintype("void") }
-    | IDENTIFIER                    { Builtintype($1) }
+    | stmt stmt_list                       { $1 :: $2 }       
 
   unary_op:
     | NOT expr                      { Unop ("!", $2) }
@@ -153,6 +137,7 @@
     | expr DIV expr                 { Binop("/", $1, $3) }
     | expr PLUS expr                { Binop("+", $1, $3) }
     | expr MINUS expr               { Binop("-", $1, $3) }
+    | expr EQUAL expr               { Binop("=", $1, $3) }
     | expr MOD expr                 { Binop("%", $1, $3) }
 
     | expr GT expr                  { Binop(">", $1, $3) }

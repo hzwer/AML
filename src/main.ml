@@ -6,15 +6,7 @@ exception Invalid_input;;
   
 let rec print_ind ind str= 
   if (ind > 0) then (("    ") ^ (print_ind (ind - 1) str))
-  else str;;  
-  
-let rec print_leftvalue = function
-  | Identifier(x) ->
-     if (is_diff x) then
-       let _x = (remove_diff x) in
-       ("(" ^ _x ^ " - (_last->" ^ _x ^ "))")
-     else x
-  | TypeIdentifier(Builtintype(t), x) -> t ^ " " ^ x;;
+  else str;;
   
 let rec print_stmt ind e =  
   match e with
@@ -63,7 +55,7 @@ let rec print_stmt ind e =
      ^ ") {\n"
      ^ (print_stmt (ind + 1) [d])
      ^ (print_ind ind "}\n")
-  | [Function(Builtintype(t), identifier, identifiers, stmt)] ->
+  | [Function(t, identifier, identifiers, stmt)] ->
      if identifier = "__main__" then ((print_ind ind (t ^ " "))
                                            ^ "main"
                                            ^ "(" ^ (exprs identifiers) ^ ")"
@@ -102,6 +94,12 @@ and print_io str e =
    | [] -> "\"\""
    | [x] -> exprs [x]
    | h :: t -> (exprs [h]) ^ " " ^ str ^ "' '" ^ str ^ " " ^ (print_io str t)
+
+and print_id x = 
+     if (is_diff x) then
+       let _x = (remove_diff x) in
+       ("(" ^ _x ^ " - (_last->" ^ _x ^ "))")
+     else x
              
 and exprs e =
   match e with
@@ -110,9 +108,11 @@ and exprs e =
   | [Bool(a)] -> string_of_bool(a)
   | [Float(a)] -> string_of_float(a)
   | [String(s)] -> s
-  | [Angle(a)] -> "angle(" ^ (exprs [a]) ^ ")"
-  | [Vector(a, b)] -> "vec2f(" ^ (exprs [a]) ^ ", " ^ (exprs [b]) ^ ")"
-  | [Leftvalue(a)] -> print_leftvalue a
+  | [Identifier(s)] -> s
+  | [Assign(a, e)] ->
+     a ^ " " ^ (exprs [e])
+  | [Binop("=", e1, Identifier(id))] ->
+     (exprs [e1]) ^ " = " ^ (print_id id)
   | [Binop(op, e1, e2)] ->
      if (is_first_op op) then
        "("
@@ -120,7 +120,9 @@ and exprs e =
        ^ "&&"
        ^ ("(" ^ (exprs [e1]) ^ " " ^ (remove_first_op op) ^ " " ^ (exprs [e2]) ^ ")")
        ^ ")"
-     else "(" ^ (exprs [e1]) ^ " " ^ op ^ " " ^ (exprs [e2]) ^ ")"
+     else if(op <> "=") then "(" ^ (exprs [e1]) ^ " " ^ op ^ " " ^ (exprs [e2]) ^ ")"
+     else 
+       (exprs [e1]) ^ " " ^ op ^ " " ^ (exprs [e2])
   | [Unop(op, e)] ->
      if op = "_++" then "(" ^ (exprs [e]) ^ "++)"
      else if op = "_++" then "(" ^ (exprs [e]) ^ "--)"
@@ -135,15 +137,9 @@ and exprs e =
      "cout << " ^ print_io "<<" exprs ^ " << endl"
   | [Read(exprs)] ->
      "cin >> " ^ print_io ">>" exprs ^ " >> endl"
-  | [Assign(a, e)] ->
-     (print_leftvalue a) ^ " = " ^ (exprs [e])
   | [Ternary(e1, e2, e3)] ->
      (exprs [e1]) ^ "? " ^ (exprs [e2]) ^ " : " ^ (exprs [e3])
-  | h :: t -> (exprs [h]) ^ ", " ^ (exprs t)
-  
-and print_type e = 
-  match e with
-  | Builtintype(a) -> a
+  | h :: t -> (exprs [h]) ^ ", " ^ (exprs t)  
     
 let rec print_toplevel = function
   | Stmt(x) -> printf "%s" (print_stmt 0 [x])

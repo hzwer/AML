@@ -21,8 +21,8 @@ let is_first_op x =
   x != (remove_first_op x)
   
 let rec gather_diff list = function
-    Exprs([Assign(l, Leftvalue(Identifier e))]) ->
-    if(is_diff e) then (remove_diff e) :: list
+    Exprs([Binop("=", Identifier(e1), Identifier(e2))]) ->
+    if(is_diff e2) then (remove_diff e2) :: list
     else list
   | Stmts(h :: t) -> gather_diff (gather_diff list h) (Stmts t)
   | x -> list       
@@ -99,5 +99,5 @@ void _Step_Time(int _time_value){
 }
 ")])        
   in
-  Stmts([prev; Function(Builtintype("int"), "main", [String("int argc, char *argv[]")], _stmt)])
+  Stmts([prev; Function("int", "main", [String("int argc, char *argv[]")], _stmt)])
   | x -> x;;

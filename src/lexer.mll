@@ -24,11 +24,6 @@ rule token =
   | "if"           { IF }
   | "else"         { ELSE }
   | "for"          { FOR }
-  | "int"          { TINT }  
-  | "double"       { TDOUBLE }
-  | "string"       { TSTRING }
-  | "bool"         { TBOOL }
-  | "void"         { VOID }
   | "true"         { BOOL (true) }
   | "false"        { BOOL (false) }
   | "println"      { PRINTLN }

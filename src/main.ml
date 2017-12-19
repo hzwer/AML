@@ -37,9 +37,7 @@ let rec print_stmt ind e =
   | [Expr(e)] ->
      (print_ind ind (exprs [e]))
      ^ ";\n"
-  | [Assign(a, e)] ->
-     (print_ind ind ((print_leftvalue a) ^ " = " ^ (exprs [e])))
-     ^ ";\n"
+    
   | [If(a, b)] ->
      (print_ind ind "if") 
      ^ "(" ^ (exprs [a]) ^ ")"
@@ -53,11 +51,11 @@ let rec print_stmt ind e =
      ^ (print_ind ind "}\n")
   | [For(a, b, c, d)] ->
      (print_ind ind "for(")
-     ^ (print_assign a)
+     ^ (exprs [a])
      ^ "; "
      ^ (exprs [b])
      ^ "; "
-     ^ (print_assign c)
+     ^ (exprs [c])
      ^ ") {\n"
      ^ (print_stmt (ind + 1) [d])
      ^ (print_ind ind "}\n")
@@ -120,7 +118,9 @@ and exprs e =
        ^ ")"
      else "(" ^ (exprs [e1]) ^ " " ^ op ^ " " ^ (exprs [e2]) ^ ")"
   | [Unop(op, e)] ->
-     "(" ^ op ^ (exprs [e]) ^ ")"
+     if op = "_++" then "(" ^ (exprs [e]) ^ "++)"
+     else if op = "_++" then "(" ^ (exprs [e]) ^ "--)"
+     else "(" ^ op ^ (exprs [e]) ^ ")"
   | [Call(identifier, identifiers)] ->
      (identifier ^
         (
@@ -131,17 +131,14 @@ and exprs e =
      "cout << " ^ print_io "<<" exprs ^ " << endl"
   | [Read(exprs)] ->
      "cin >> " ^ print_io ">>" exprs ^ " >> endl"
+  | [Assign(a, e)] ->
+     (print_leftvalue a) ^ " = " ^ (exprs [e])
   | h :: t -> (exprs [h]) ^ ", " ^ (exprs t)
   
 and print_type e = 
   match e with
   | Builtintype(a) -> a
-  
-and print_assign e =
-  match e with
-  | Assign(a, e) -> (print_leftvalue a) ^ " = " ^ (exprs [e])
-  | other -> "fault";;             
-  
+    
 let rec print_toplevel = function
   | Stmt(x) -> printf "%s" (print_stmt 0 [x])
   | Agent(identifier, stmt) ->

@@ -1,25 +1,25 @@
 int main(){
     int a = 3;
     if (a > 2)
-      println("Yes");
+        println("Yes");
     else
-      println("No");
+        println("No");
     if(a >= 3)
         if(a <= 3)
             printfln("Yes");
         else printfln("No");
-     if (2 < 10)
-     {
-          println("Yes");
-     }
-     if (true) {
-         if (false){
-             v=(4 + 1);
-         } else {
-         v = 2;
-     }
-     } else {
-}
-     println(v);
-     return(0);
+    if (2 < 10)
+    {
+        println("Yes");
+    }
+    if (true) {
+        if (false){
+            v=(4 + 1);
+        } else {
+            v = 2;
+        }
+    } else {
+    }
+    println(v);
+    return(0);
 }

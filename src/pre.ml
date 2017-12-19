@@ -21,7 +21,7 @@ let is_first_op x =
   x != (remove_first_op x)
   
 let rec gather_diff list = function
-    Assign(l, Leftvalue(Identifier e)) ->
+    Expr(Assign(l, Leftvalue(Identifier e))) ->
     if(is_diff e) then (remove_diff e) :: list
     else list
   | Stmts(h :: t) -> gather_diff (gather_diff list h) (Stmts t)

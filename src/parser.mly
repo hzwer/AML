@@ -22,6 +22,8 @@
 %token PLUS MINUS TIMES DIV
 %token LPAREN RPAREN
 %token NOT
+%token INC
+%token DEC
 %token EQUAL
 %token EOF
 %token COMMA
@@ -52,6 +54,8 @@
 %nonassoc SEQ SNE FSEQ FSNE
 %nonassoc GT LT GE LE FGT FLT FGE FLE
 %nonassoc NOT
+%nonassoc INC
+%nonassoc DEC
 %left PLUS MINUS
 %left DIV TIMES MOD
 
@@ -87,6 +91,7 @@
     | binary_op                     { $1 }
     | unary_op                      { $1 }
     | call_stmt                     { $1 }
+    | leftvalue EQUAL expr          { Assign($1, $3) }
     | TVECTOR LPAREN expr COMMA expr RPAREN { Vector($3, $5) }
     | TANGLE LPAREN expr RPAREN { Angle($3) }
 
@@ -97,7 +102,7 @@
       
     
   for_stmt:
-    | FOR LPAREN assignment SEMICOLON expr SEMICOLON assignment RPAREN
+    | FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN
     stmt
           { For($3, $5, $7, $9) }
 
@@ -119,7 +124,6 @@
     | if_stmt                              { $1 }
     | for_stmt                             { $1 }
     | COMMENT                              { Comment($1) }
-    | assignment SEMICOLON                 { $1 }
     | expr SEMICOLON                       { Expr($1) }
     | builtintype IDENTIFIER LPAREN expr_list RPAREN LBRACE stmt_list RBRACE      { Function($1, $2, $4, Stmts($7)) }
     | IDENTIFIER LPAREN expr_list RPAREN LBRACE stmt_list RBRACE      { Function(Builtintype(""), $1, $3, Stmts($6)) }
@@ -142,6 +146,10 @@
   unary_op:
     | NOT expr                      { Unop ("!", $2) }
     | MINUS expr                    { Unop ("-", $2) }
+    | INC expr                      { Unop ("++", $2) }
+    | DEC expr                      { Unop ("--", $2) }
+    | expr INC                      { Unop ("_++", $1) }
+    | expr DEC                      { Unop ("_--", $1) }
     
   binary_op:
     | expr TIMES expr               { Binop("*", $1, $3) }
@@ -168,7 +176,4 @@
     | expr OR expr                  { Binop("||", $1, $3) }
     | expr BINAND expr              { Binop("&", $1, $3) }
     | expr BINOR expr               { Binop("|", $1, $3) }
-    | expr BINXOR expr              { Binop("^", $1, $3) }
-        
-  assignment:
-    | leftvalue EQUAL expr             { Assign($1, $3) }
+    | expr BINXOR expr              { Binop("^", $1, $3) }       

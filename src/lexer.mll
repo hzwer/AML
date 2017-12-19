@@ -45,6 +45,8 @@ rule token =
   | '/'            { DIV }
   | '%'            { MOD }
   | '!'            { NOT }
+  | "++"           { INC }
+  | "--"           { DEC }
   
   | "=="           { SEQ }
   | "!="           { SNE }

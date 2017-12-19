@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
     glutInitWindowSize(500, 500);
     int glut_window = glutCreateWindow("AML");
     void *_Agent1, *_Agent2;
-    for(int i = 1; (i <= 10); i = (i + 1)) {
+    for(int i = 1; (i <= 10); (i++)) {
         _Agent1 = new Blinker(angle(((i * acos(-1.)) / 5)));
         _Agent2 = new Blinker(angle(((i * acos(-1.)) / 5)));
         _agents.push_back(make_pair((_Agent*)_Agent1, (_Agent*)_Agent2));

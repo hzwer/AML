@@ -1,14 +1,14 @@
 int main(){
-     println(vec2f(1, 2));
-     println(vec2f(0, 0) + vec2f(1, 1));
-     vec2f a = vec2f(3, 5);
-     vec2f b = vec2f(1, 5);
-     double d = 2.1;     
-     println(a + b);
-     println(a - b);
-     println(a * b);
-     println(a / b);
-     println(a * d);
-     println(a / d);
-     return(0);
+    println(vec2f(1, 2));
+    println(vec2f(0, 0) + vec2f(1, 1));
+    vec2f a = vec2f(3, 5);
+    vec2f b = vec2f(1, 5);
+    double d = 2.1;     
+    println(a + b);
+    println(a - b);
+    println(a * b);
+    println(a / b);
+    println(a * d);
+    println(a / d);
+    return(0);
 }

@@ -26,14 +26,14 @@ and expr =
   | Call of (identifier * exprs)
   | Println of exprs
   | Read of exprs
+  | Assign of (leftvalue * expr)
 
 and stmt =
   | Stmts of stmts
-  | Assign of (leftvalue * expr)
   | Expr of expr
   | If of (expr * stmt)
   | IfElse of (expr * stmt * stmt)
-  | For of (stmt * expr * stmt * stmt)
+  | For of (expr * expr * expr * stmt)
   | Comment of string
   | Function of (builtintype * identifier * exprs * stmt)
   | Empty

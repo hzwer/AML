@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
     glutInitWindowSize(500, 500);
     int glut_window = glutCreateWindow("AML");
     void *_Agent1, *_Agent2;
-    for(int i = 1; (i <= 5); i = (i + 1)) {
+    for(int i = 1; (i <= 5); (i++)) {
         _Agent1 = new Ball((-12 + (4 * i)), 10);
         _Agent2 = new Ball((-12 + (4 * i)), 10);
         _agents.push_back(make_pair((_Agent*)_Agent1, (_Agent*)_Agent2));

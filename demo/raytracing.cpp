@@ -289,8 +289,8 @@ int main(int argc, char *argv[]){
             double y=+L-(i+0.5)*(2*L/PH);
             double x=-L+(j+0.5)*(2*L/PW);
             vec2f o(x,y);
-            vec3f p(0,0,-1);
-            vec3f d(x,y,1);
+            vec3f p(0,0,1);
+            vec3f d(x,y,-1);
             _Agent *r=new _Ray(o,p,d);
             _Agent *_copy_r=new _Ray(o,p,d);
             *_copy_r=*r;

@@ -1,11 +1,28 @@
-4 1
+12 1
 ambient 0.1 0.1 0.1
-specular 0 0 0
-diffuse 0.2 0 0
+specular 0.5 0.5 0.5
 shininess 1
-face -1 -1 2  -1 1 2  1 1 2
-face 1 1 2  1 -1 2  -1 -1 2
-face 1 1 -2  -1 1 -2  -1 -1 -2
-face -1 -1 -2  1 -1 -2  1 1 -2
+
+diffuse 0.2 0 0
+face 1 1 -1  -1 1 -1  -1 -1 -1
+face -1 -1 -1  1 -1 -1  1 1 -1
+
+face -1 -1 1  -1 1 1  1 1 1
+face 1 1 1  1 -1 1  -1 -1 1
+
+diffuse 0 0.2 0
+face 1 1 1  -1 1 1  -1 1 -1
+face -1 1 -1  1 1 -1  1 1 1
+
+face -1 -1 -1  -1 -1 1  1 -1 1
+face 1 -1 1  1 -1 -1  -1 -1 -1
+
+diffuse 0 0 0.2
+face -1 -1 -1  -1 1 -1  -1 1 1
+face -1 1 1  -1 -1 1  -1 -1 -1
+
+face 1 1 1  1 1 -1  1 -1 -1
+face 1 -1 -1  1 -1 1  1 1 1
+
 lightcol 1 1 1
-light 0 0 -1
+light 0 0 -0.8

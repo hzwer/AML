@@ -1,7 +1,8 @@
 // Produced by AML
 #include "geolib.h"
 int main() {
-    int a = 3;
+    int a;
+    a = ((1 + 2) == 3? 5 : 4);
     if((a > 2)) {
         cout << "Yes" << endl;
     }

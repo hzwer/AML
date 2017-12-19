@@ -28,7 +28,7 @@ rule token =
   | "double"       { TDOUBLE }
   | "string"       { TSTRING }
   | "bool"         { TBOOL }
-  | "angle"          { TANGLE }
+  | "angle"        { TANGLE }
   | "vec2f"        { TVECTOR }
   | "void"         { VOID }
   | "true"         { BOOL (true) }
@@ -71,6 +71,8 @@ rule token =
   | ')'            { RPAREN }
   | '{'            { LBRACE }
   | '}'            { RBRACE }
+  | '?'            { QUESTION }
+  | ':'            { COLON }
   | ';'            { SEMICOLON }
   | ','            { COMMA }
   | ident          { IDENTIFIER (Lexing.lexeme lexbuf) }

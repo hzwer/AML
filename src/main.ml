@@ -133,6 +133,8 @@ and exprs e =
      "cin >> " ^ print_io ">>" exprs ^ " >> endl"
   | [Assign(a, e)] ->
      (print_leftvalue a) ^ " = " ^ (exprs [e])
+  | [Ternary(e1, e2, e3)] ->
+     (exprs [e1]) ^ "? " ^ (exprs [e2]) ^ " : " ^ (exprs [e3])
   | h :: t -> (exprs [h]) ^ ", " ^ (exprs t)
   
 and print_type e = 

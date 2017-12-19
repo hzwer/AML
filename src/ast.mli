@@ -27,6 +27,7 @@ and expr =
   | Println of exprs
   | Read of exprs
   | Assign of (leftvalue * expr)
+  | Ternary of (expr * expr * expr)
 
 and stmt =
   | Stmts of stmts

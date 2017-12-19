@@ -27,6 +27,8 @@
 %token EQUAL
 %token EOF
 %token COMMA
+%token COLON
+%token QUESTION
 %token SEMICOLON
 %token LBRACE RBRACE
 %token AND
@@ -92,8 +94,9 @@
     | unary_op                      { $1 }
     | call_stmt                     { $1 }
     | leftvalue EQUAL expr          { Assign($1, $3) }
+    | expr QUESTION expr COLON expr { Ternary($1, $3, $5) }
     | TVECTOR LPAREN expr COMMA expr RPAREN { Vector($3, $5) }
-    | TANGLE LPAREN expr RPAREN { Angle($3) }
+    | TANGLE LPAREN expr RPAREN { Angle($3) }    
 
   expr_list:
     | { [] }

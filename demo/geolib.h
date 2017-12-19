@@ -11,8 +11,7 @@ typedef double Float;
 class vec2f{
 public:
     Float x,y;
-    vec2f(){}
-    vec2f(Float _x,Float _y):x(_x),y(_y){}
+    vec2f(Float _x=0,Float _y=0):x(_x),y(_y){}
     vec2f operator + (const vec2f &b){return vec2f(x+b.x,y+b.y);}
     vec2f operator - (const vec2f &b){return vec2f(x-b.x,y-b.y);}
     Float operator * (const vec2f &b){return x*b.x+y*b.y;}
@@ -21,12 +20,13 @@ public:
     Float _sqrlen(void){return x*x+y*y;}
     Float _len(void){return sqrt(_sqrlen());}
     Float _crossprd(const vec2f &b){return x*b.y-b.x*y;}
+    Float _dot(const vec2f &b){return x*b.x+y*b.y;}
+    vec2f _norm(void){return (*this)/_len();}
 };
 class vec3f{
 public:
     Float x,y,z;
-    vec3f(){}
-    vec3f(Float _x,Float _y,Float _z):x(_x),y(_y),z(_z){}
+    vec3f(Float _x=0,Float _y=0,Float _z=0):x(_x),y(_y),z(_z){}
     vec3f operator + (const vec3f &b){return vec3f(x+b.x,y+b.y,z+b.z);}
     vec3f operator - (const vec3f &b){return vec3f(x-b.x,y-b.y,z-b.z);}
     Float operator * (const vec3f &b){return x*b.x+y*b.y+z*b.z;}
@@ -35,6 +35,8 @@ public:
     Float _sqrlen(void){return x*x+y*y+z*z;}
     Float _len(void){return sqrt(_sqrlen());}
     vec3f _crossprd(const vec3f &b){return vec3f(y*b.z-z*b.y,z*b.x-x*b.z,x*b.y-y*b.x);}
+    Float _dot(const vec3f &b){return x*b.x+y*b.y+z*b.z;}
+    vec3f _norm(void){return (*this)/_len();}
 };
 
 const Float _PI=acos(-1.0);

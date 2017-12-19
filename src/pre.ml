@@ -21,7 +21,7 @@ let is_first_op x =
   x != (remove_first_op x)
   
 let rec gather_diff list = function
-    Expr(Assign(l, Leftvalue(Identifier e))) ->
+    Exprs([Assign(l, Leftvalue(Identifier e))]) ->
     if(is_diff e) then (remove_diff e) :: list
     else list
   | Stmts(h :: t) -> gather_diff (gather_diff list h) (Stmts t)
@@ -31,7 +31,7 @@ let rec pre_agent_fun indentifier = function
     Function(t, "step", identifiers, stmt) ->
     (
       let _stmt = Stmts([
-                           Expr(String(indentifier ^"* _last = (" ^ indentifier ^ "*)_last_Agent;"));
+                           Exprs([String(indentifier ^"* _last = (" ^ indentifier ^ "*)_last_Agent;")]);
                            stmt;
                          ])            
       in Function(t, "_step", [String("double _tim, double _dtim, _Agent* _last_Agent")], _stmt)
@@ -39,7 +39,7 @@ let rec pre_agent_fun indentifier = function
   | Function(t, "plot", identifiers, stmt) ->
      let _stmt = Stmts([
                           stmt;
-                          Expr(String("glFlush();\n"));
+                          Exprs([String("glFlush();\n")]);
                       ])
      in Function(t, "_plot", [String("double _tim, double _dtim")],              
                  _stmt)
@@ -52,31 +52,31 @@ let pre_agent = function
     let _stmt = Stmts(List.concat [
                           (List.map (pre_agent_fun identifier) stmt);
                           [
-                            Expr(String("void _copy_from(_Agent *_from_Agent){
+                            Exprs([String("void _copy_from(_Agent *_from_Agent){
         " ^ identifier ^"* _from = (" ^ identifier ^"*)_from_Agent;
         *this = *_from;
-    }"))
+    }")])
                      ]])
     in _stmt
-  | other -> Stmts([Expr(String("fault"))])
+  | other -> Stmts([Exprs[String("fault")]])
 
 let pre_main = function
     Function(t, identifier, identifiers, stmt) ->
   let _stmt = 
     Stmts(
-        [Expr(String("glutInit(&argc, argv);
+        [Exprs[(String("glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(500, 500);
     int glut_window = glutCreateWindow(\"AML\");
-    void *_Agent1, *_Agent2;"));
+    void *_Agent1, *_Agent2;"))];
          stmt;
-         Expr(String("glutDisplayFunc(&_Plot);
+         Exprs[(String("glutDisplayFunc(&_Plot);
     glutTimerFunc(1000/_FPS, _Step_Time, 1);
-    glutMainLoop();"));
+    glutMainLoop();"))];
       ])
   and prev =
-    Expr(String("
+    Exprs([String("
 vector<pair<_Agent*,_Agent*> > _agents;
 double _dt=1/_FPS*_SPEEDUP_RATE;
 double _cur_tim=0.0;
@@ -97,7 +97,7 @@ void _Step_Time(int _time_value){
     glutPostRedisplay();
     glutTimerFunc(1000/_FPS, _Step_Time, 1);
 }
-"))        
+")])        
   in
   Stmts([prev; Function(Builtintype("int"), "main", [String("int argc, char *argv[]")], _stmt)])
   | x -> x;;

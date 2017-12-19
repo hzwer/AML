@@ -10,8 +10,6 @@
 %token TDOUBLE
 %token TSTRING
 %token TBOOL
-%token TANGLE
-%token TVECTOR
 %token VOID
 %token IF
 %token ELSE
@@ -81,7 +79,7 @@
 
   leftvalue:
     | IDENTIFIER                      { Identifier($1) }
-    | builtintype IDENTIFIER          { TypeIdentifier($1, $2) }    
+    | builtintype IDENTIFIER          { TypeIdentifier($1, $2) }
       
   expr:    
     | INT                           { Int($1) }
@@ -95,8 +93,6 @@
     | call_stmt                     { $1 }
     | leftvalue EQUAL expr          { Assign($1, $3) }
     | expr QUESTION expr COLON expr { Ternary($1, $3, $5) }
-    | TVECTOR LPAREN expr COMMA expr RPAREN { Vector($3, $5) }
-    | TANGLE LPAREN expr RPAREN { Angle($3) }    
 
   expr_list:
     | { [] }
@@ -105,7 +101,7 @@
       
     
   for_stmt:
-    | FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN
+    | FOR LPAREN expr_list SEMICOLON expr_list SEMICOLON expr_list RPAREN
     stmt
           { For($3, $5, $7, $9) }
 
@@ -127,7 +123,7 @@
     | if_stmt                              { $1 }
     | for_stmt                             { $1 }
     | COMMENT                              { Comment($1) }
-    | expr SEMICOLON                       { Expr($1) }
+    | expr_list SEMICOLON                  { Exprs($1) }
     | builtintype IDENTIFIER LPAREN expr_list RPAREN LBRACE stmt_list RBRACE      { Function($1, $2, $4, Stmts($7)) }
     | IDENTIFIER LPAREN expr_list RPAREN LBRACE stmt_list RBRACE      { Function(Builtintype(""), $1, $3, Stmts($6)) }
     | LBRACE stmt_list RBRACE              { Stmts($2) }
@@ -141,8 +137,6 @@
     | TDOUBLE                       { Builtintype("double") }
     | TSTRING                       { Builtintype("string") }
     | TBOOL                         { Builtintype("bool") }
-    | TANGLE                        { Builtintype("angle") }
-    | TVECTOR                       { Builtintype("vec2f") }
     | VOID                          { Builtintype("void") }
     | IDENTIFIER                    { Builtintype($1) }
 

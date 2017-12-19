@@ -28,8 +28,6 @@ rule token =
   | "double"       { TDOUBLE }
   | "string"       { TSTRING }
   | "bool"         { TBOOL }
-  | "angle"        { TANGLE }
-  | "vec2f"        { TVECTOR }
   | "void"         { VOID }
   | "true"         { BOOL (true) }
   | "false"        { BOOL (false) }

@@ -31,10 +31,10 @@ and expr =
 
 and stmt =
   | Stmts of stmts
-  | Expr of expr
+  | Exprs of exprs
   | If of (expr * stmt)
   | IfElse of (expr * stmt * stmt)
-  | For of (expr * expr * expr * stmt)
+  | For of (exprs * exprs * exprs * stmt)
   | Comment of string
   | Function of (builtintype * identifier * exprs * stmt)
   | Empty

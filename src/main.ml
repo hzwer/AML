@@ -21,22 +21,26 @@ let rec print_stmt ind e =
   | [] -> ""
   | [Empty] -> ";\n"
              
-  | [Expr(Call("register", identifiers))] -> (
+  | [Exprs([Call("register", identifiers)])] -> (
     (print_stmt ind [register identifiers])
   )
 
-  | [Expr(Call("plotvec2f", identifiers))] ->
-     (print_stmt ind [Expr(Call("_AML_Vertex2f", identifiers))])
+  | [Exprs([Call("plotvec2f", identifiers)])] ->
+     (print_stmt ind [Exprs([Call("_AML_Vertex2f", identifiers)])])
     
   | [Function(t, "project", identifiers, stmt)] ->
      print_stmt ind [pre_main(Function(t, "main", identifiers, stmt))]
 
-  | [Expr(String(s))] ->
+  | [Exprs([String(s)])] ->
      (print_ind ind (exprs [String(s)]))
-     ^ "\n"    
-  | [Expr(e)] ->
+     ^ "\n"
+     
+  | [Exprs([e])] ->
      (print_ind ind (exprs [e]))
      ^ ";\n"
+
+  | [Exprs(h :: t)] ->
+     (print_ind ind (exprs [h])) ^ ", " ^ (print_stmt 0 [Exprs(t)]);
     
   | [If(a, b)] ->
      (print_ind ind "if") 
@@ -51,11 +55,11 @@ let rec print_stmt ind e =
      ^ (print_ind ind "}\n")
   | [For(a, b, c, d)] ->
      (print_ind ind "for(")
-     ^ (exprs [a])
+     ^ (exprs a)
      ^ "; "
-     ^ (exprs [b])
+     ^ (exprs b)
      ^ "; "
-     ^ (exprs [c])
+     ^ (exprs c)
      ^ ") {\n"
      ^ (print_stmt (ind + 1) [d])
      ^ (print_ind ind "}\n")
@@ -87,11 +91,11 @@ let rec print_stmt ind e =
 and register e =
   match e with
     [con] -> Stmts([
-        Expr(String("_Agent1 = new " ^ (exprs [con]) ^ ";"));
-        Expr(String("_Agent2 = new " ^ (exprs [con]) ^ ";"));        
-        Expr(String("_agents.push_back(make_pair((_Agent*)_Agent1, (_Agent*)_Agent2));"));
+        Exprs([String("_Agent1 = new " ^ (exprs [con]) ^ ";")]);
+        Exprs([String("_Agent2 = new " ^ (exprs [con]) ^ ";")]);
+        Exprs([String("_agents.push_back(make_pair((_Agent*)_Agent1, (_Agent*)_Agent2));")]);
              ])
-  | other -> Stmts([Expr(String("fault"))])
+  | other -> Stmts([Exprs([String("fault")])])
             
 and print_io str e =
   match e with

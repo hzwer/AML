@@ -9,8 +9,6 @@ and expr =
   | Int of int
   | Float of float
   | String of string
-  | Angle of expr
-  | Vector of expr * expr
   | Identifier of identifier
   | Unop of string * expr
   | Binop of string * expr * expr

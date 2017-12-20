@@ -1,6 +1,6 @@
 import os
 
-tests = ["arith", "if", "loop", "variable", "comment", "function", "block", "vector", "io"]
+tests = ["arith", "if", "loop", "variable", "comment", "function", "block", "vector", "io", "global_variable", "array", "ternary"]
 tests_agent = ["demo1", "demo2"]
 
 l = len(tests)
